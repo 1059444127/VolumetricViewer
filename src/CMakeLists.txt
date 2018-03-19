@@ -5,6 +5,11 @@ set (volumetricRendererSrc
 		HelperWidgets.cpp
 		ControlPanel.cpp
 		RenderViewport.cpp
+		
+		Renderer/Texture3D.cpp
+		Renderer/Object3D.cpp
+		Renderer/TextureVolumeObject.cpp
+		Renderer/CameraObject.cpp
 )
 
 add_executable(VolumetricRenderer ${volumetricRendererSrc})
