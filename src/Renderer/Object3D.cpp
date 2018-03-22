@@ -8,7 +8,7 @@ Object3D::Object3D()
 	scale = glm::vec3(1, 1, 1);
 }
 
-glm::mat4 Object3D::GetModelTransform()
+glm::mat4 Object3D::GetModelMatrix()
 {
 	glm::mat4 translateM = glm::translate(glm::mat4(1), position);
 	glm::mat4 scaleM = glm::scale(glm::mat4(1), scale);

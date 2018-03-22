@@ -15,7 +15,8 @@ class Object3D
 		Object3D();
 		virtual void Init(){}
 		virtual void Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix){}
-		glm::mat4 GetModelTransform(); 
+		virtual void Destroy(){}
+		glm::mat4 GetModelMatrix(); 
 		glm::vec3 GetPosition();
 		void SetPosition(glm::vec3 pos);
 		glm::vec3 GetRotation();

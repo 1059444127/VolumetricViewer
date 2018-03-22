@@ -15,4 +15,5 @@ class CameraObject: public Object3D
 	public:
 		CameraObject();
 		glm::mat4 GetProjectionMatrix(float windowWidth, float windowHeight);
+		glm::mat4 GetViewMatrix();
 };

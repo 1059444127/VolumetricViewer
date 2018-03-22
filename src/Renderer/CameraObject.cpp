@@ -20,3 +20,8 @@ glm::mat4 CameraObject::GetProjectionMatrix(float windowWidth, float windowHeigh
 		projMat = glm::ortho(-windowWidth/2, windowWidth/2, -windowHeight/2, windowHeight/2, nearClipping, farClipping);
 	return projMat; 
 }
+
+glm::mat4 CameraObject::GetViewMatrix()
+{
+	return glm::inverse(GetModelMatrix());
+}

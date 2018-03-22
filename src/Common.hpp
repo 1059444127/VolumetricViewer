@@ -1,5 +1,7 @@
 #pragma once
 
+#define OPENGL_FUNC_MACRO QOpenGLFunctions_3_2_Compatibility
+
 //glm
 #define GLM_FORCE_INLINE 
 //#define GLM_FORCE_SSE2
@@ -39,3 +41,4 @@
 #include <QtWidgets/QSlider>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_2_Compatibility>
