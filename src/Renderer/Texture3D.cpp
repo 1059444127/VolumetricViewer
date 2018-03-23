@@ -51,3 +51,8 @@ void Texture3D::LoadData(void* buffer, uint64_t count)
 
 	ogl->glBindTexture(GL_TEXTURE_3D, 0);
 }
+
+unsigned int Texture3D::GetTextureId()
+{
+	return textureId; 
+}

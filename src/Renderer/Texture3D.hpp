@@ -17,4 +17,5 @@ class Texture3D
 		void Allocate(uint64_t w, uint64_t h, uint64_t d);
 		void Destroy();
 		void LoadData(void* buffer, uint64_t count);
+		unsigned int GetTextureId();
 };

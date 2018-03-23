@@ -1,10 +1,12 @@
 
 set (volumetricRendererSrc 
+		Util.cpp
 		Main.cpp
 		MainWindow.cpp
 		HelperWidgets.cpp
 		ControlPanel.cpp
 		RenderViewport.cpp
+		TestGenerateVolume.cpp
 		
 		Renderer/Texture3D.cpp
 		Renderer/Object3D.cpp

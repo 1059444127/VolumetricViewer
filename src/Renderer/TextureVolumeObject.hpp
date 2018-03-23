@@ -2,6 +2,8 @@
 
 
 #include "Object3D.hpp"
+#include "Texture3D.hpp"
+
 
 class TextureVolumeObject: public Object3D
 {
@@ -27,6 +29,8 @@ class TextureVolumeObject: public Object3D
 		static int vertexShaderObject;
 		static int fragmentShaderObject;
 		
+		Texture3D* volumeTexture; 
+		
 		unsigned int volumeSlices;
 		
 		unsigned int vertexBuffer;
@@ -43,4 +47,6 @@ class TextureVolumeObject: public Object3D
 		virtual void Init();
 		virtual void Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 		virtual void Destroy();
+		
+		void SetVolumeTexture(Texture3D* vt);
 };

@@ -1,43 +1,42 @@
 #include "TextureVolumeObject.hpp"
 
 
-std::string TextureVolumeObject::vertSrc= ""
+std::string TextureVolumeObject::vertSrc= R"(
+#version 330
 //attribs
-"#version 440\n"
-"layout(location = 0) in vec3 pointPosition;" 
-"layout(location = 1) in vec4 pointColor;"
+layout(location = 0) in vec3 pointPosition;
 //transforms
-"uniform mat4 modelViewProjectionMatrix;" 
-"uniform float materialPointSize;"
+uniform mat4 modelViewProjectionMatrix;
+uniform float brightness;
+uniform float contrast;
 //outputs
-"out vec4 fragmentColor;"  
+out vec4 fragmentPosition;
 //main
-"void main()"
-"{"
+void main()
+{
 	//compute outputs
-"	fragmentColor = pointColor;"
-"   gl_Position = modelViewProjectionMatrix * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);" 
-"	gl_PointSize = materialPointSize;"
-"}"
-;
-
-std::string TextureVolumeObject::fragSrc = ""
+	fragmentPosition = vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
+	gl_Position = modelViewProjectionMatrix * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
+}
+)";
+ 
+std::string TextureVolumeObject::fragSrc = R"(
+#version 330
 //inputs
-"#version 440\n"
-"in vec4 fragmentColor;" 
+in vec4 fragmentPosition;
 //uniforms
-"uniform float materialAlpha;"
+uniform sampler3D volumeTexture;
 //main
-"void main()"
-"{"
-"  	gl_FragColor = vec4(fragmentColor.xyz * fragmentColor.w, materialAlpha);" 
-"}"
-;
-
+void main()
+{
+  	gl_FragColor = texture3D(volumeTexture, fragmentPosition.xyz);
+}
+)";
+ 
 int TextureVolumeObject::programShaderObject;
 int TextureVolumeObject::vertexShaderObject;
 int TextureVolumeObject::fragmentShaderObject;
-
+ 
 void TextureVolumeObject::InitSystem()
 {
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
@@ -92,6 +91,7 @@ TextureVolumeObject::TextureVolumeObject(unsigned int slices)
 	brightness = 0;
 	contrast = 1;
 }
+
 
 void TextureVolumeObject::Init()
 {
@@ -154,7 +154,10 @@ void TextureVolumeObject::Init()
 	//Unbind array and element buffers
 	ogl->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	ogl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
+	volumeTexture = NULL; 
 }
+
 
 void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
@@ -181,6 +184,20 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	int modelViewProjectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "modelViewProjectionMatrix"); 
 	ogl->glUniformMatrix4fv(modelViewProjectionMatrixLocation, 1, false, glm::value_ptr(mvpMatrix));
 	
+	//update 3d texture
+	int volumeTextureLocation = ogl->glGetUniformLocation(programShaderObject, "volumeTexture"); 
+	ogl->glUniform1i(volumeTextureLocation, 0);
+	ogl->glActiveTexture(GL_TEXTURE0 + 0);
+	
+	if(volumeTexture != NULL)
+	{
+		ogl->glBindTexture(GL_TEXTURE_3D, volumeTexture->GetTextureId());
+	}
+	else
+	{
+		ogl->glBindTexture(GL_TEXTURE_3D, 0);
+	}
+	
 	//update material uniforms
 	int materialAlphaLocation = ogl->glGetUniformLocation(programShaderObject, "brightness"); 
 	ogl->glUniform1f(materialAlphaLocation, brightness);
@@ -205,10 +222,17 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	ogl->glDepthMask(GL_TRUE);
 }
 
+
 void TextureVolumeObject::Destroy()
 {
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
 	ogl->glDeleteBuffers(1, &vertexBuffer);
 	ogl->glDeleteBuffers(1, &elementBuffer);
 	ogl->glDeleteVertexArrays(1, &vertexArrayObject);
+}
+
+
+void TextureVolumeObject::SetVolumeTexture(Texture3D* vt)
+{
+	volumeTexture = vt; 
 }
