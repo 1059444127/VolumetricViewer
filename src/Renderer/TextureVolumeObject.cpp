@@ -112,7 +112,7 @@ void TextureVolumeObject::Init()
 		Vertex v;
 		v.w = 1.0;
 		
-		v.z = (double)i / (double)volumeSlices * 2.0 - 1.0;
+		v.z = (double)i / (double)volumeSlices * -2.0 + 1.0;
 		v.x = -1.0;
 		v.y = -1.0;
 		vertexData[i * 4 + 0] = v;
@@ -169,6 +169,9 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	//disable writting to depth buffer
 	ogl->glEnable(GL_DEPTH_TEST);
 	ogl->glDepthMask(GL_FALSE);
+	
+	//enable backface culling 
+	ogl->glEnable(GL_CULL_FACE); 
 	
 	//enable blending
 	ogl->glEnable(GL_BLEND);

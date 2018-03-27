@@ -10,11 +10,12 @@ Object3D::Object3D()
 
 glm::mat4 Object3D::GetModelMatrix()
 {
+	float degtorad = 0.01745329251;
 	glm::mat4 translateM = glm::translate(glm::mat4(1), position);
 	glm::mat4 scaleM = glm::scale(glm::mat4(1), scale);
-	glm::mat4 rotxM = glm::rotate(glm::mat4(1), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::mat4 rotyM = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 rotzM = glm::rotate(glm::mat4(1), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotxM = glm::rotate(glm::mat4(1), degtorad * rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 rotyM = glm::rotate(glm::mat4(1), degtorad * rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 rotzM = glm::rotate(glm::mat4(1), degtorad * rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::mat4 rotM = rotyM * rotxM * rotzM; 		
 	return translateM * rotM * scaleM;
 }

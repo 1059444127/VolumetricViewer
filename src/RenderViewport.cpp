@@ -17,6 +17,9 @@ void RenderViewport::initializeGL()
 	
 	cameraObject = new CameraObject;
 	cameraControl = new CameraControl(cameraObject);
+	
+	connect(cameraControl, &CameraControl::CameraUpdated, [this](){update(); });
+	
 	textureVolumeObject = new TextureVolumeObject;
 	TextureVolumeObject::InitSystem(); 
 	textureVolumeObject->Init();
@@ -61,6 +64,11 @@ void RenderViewport::mouseReleaseEvent(QMouseEvent *event)
 void RenderViewport::mouseMoveEvent(QMouseEvent *event)
 {
 	cameraControl->mouseMoveEvent(event); 
+}
+
+void RenderViewport::wheelEvent(QWheelEvent *event)
+{
+	cameraControl->wheelEvent(event); 
 }
 
 void RenderViewport::keyPressEvent(QKeyEvent *event)
