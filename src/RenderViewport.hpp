@@ -6,6 +6,7 @@
 #include "Renderer/CameraObject.hpp"
 #include "Renderer/TextureVolumeObject.hpp"
 #include "Renderer/Texture3D.hpp"
+#include "Renderer/CameraControl.hpp"
 
 
 class RenderViewport: public QOpenGLWidget
@@ -16,12 +17,20 @@ class RenderViewport: public QOpenGLWidget
 		int windowHeight; 
 	
 		CameraObject* cameraObject; 
+		CameraControl* cameraControl; 
 		TextureVolumeObject* textureVolumeObject; 
 		Texture3D* textureVolume; 
 	
 		void initializeGL();
 		void paintGL();
 		void resizeGL(int w, int h);
+		
+		void mousePressEvent(QMouseEvent *event);
+		void mouseReleaseEvent(QMouseEvent *event);
+		void mouseMoveEvent(QMouseEvent *event);
+		void keyPressEvent(QKeyEvent *event);
+		void keyReleaseEvent(QKeyEvent *event);
+		
 		
 	public:
 		RenderViewport();

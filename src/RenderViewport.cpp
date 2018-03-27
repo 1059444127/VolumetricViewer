@@ -16,6 +16,7 @@ void RenderViewport::initializeGL()
     ogl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	cameraObject = new CameraObject;
+	cameraControl = new CameraControl(cameraObject);
 	textureVolumeObject = new TextureVolumeObject;
 	TextureVolumeObject::InitSystem(); 
 	textureVolumeObject->Init();
@@ -45,4 +46,29 @@ void RenderViewport::paintGL()
 	textureVolumeObject->Render(cameraObject->GetViewMatrix(), cameraObject->GetProjectionMatrix(windowWidth, windowHeight));
 	
 	PrintGLErrors();
+}
+
+void RenderViewport::mousePressEvent(QMouseEvent *event)
+{
+	cameraControl->mousePressEvent(event);
+}
+
+void RenderViewport::mouseReleaseEvent(QMouseEvent *event)
+{
+	cameraControl->mouseReleaseEvent(event);
+}
+
+void RenderViewport::mouseMoveEvent(QMouseEvent *event)
+{
+	cameraControl->mouseMoveEvent(event); 
+}
+
+void RenderViewport::keyPressEvent(QKeyEvent *event)
+{
+	cameraControl->keyPressEvent(event);
+}
+
+void RenderViewport::keyReleaseEvent(QKeyEvent *event)
+{
+	cameraControl->keyReleaseEvent(event); 
 }

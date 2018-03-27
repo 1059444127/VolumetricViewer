@@ -22,4 +22,5 @@ include_directories(${GLM_INC_DIR})
 #DCMTK
 
 
+include_directories(src)
 add_subdirectory(src)

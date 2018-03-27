@@ -39,6 +39,8 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSlider>
+#include <QMouseEvent>
+#include <QKeyEvent>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLFunctions_3_3_Compatibility>

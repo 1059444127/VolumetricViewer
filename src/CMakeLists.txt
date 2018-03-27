@@ -12,6 +12,7 @@ set (volumetricRendererSrc
 		Renderer/Object3D.cpp
 		Renderer/TextureVolumeObject.cpp
 		Renderer/CameraObject.cpp
+		Renderer/CameraControl.cpp
 )
 
 add_executable(VolumetricRenderer ${volumetricRendererSrc})
