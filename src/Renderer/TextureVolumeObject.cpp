@@ -7,6 +7,9 @@ std::string TextureVolumeObject::vertSrc= R"(
 layout(location = 0) in vec3 pointPosition;
 //transforms
 uniform mat4 modelViewProjectionMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 uniform float brightness;
 uniform float contrast;
 //outputs
@@ -164,6 +167,7 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
 	
 	//compute mvp matrix
+	glm::mat4 modelMatrix = GetModelMatrix(); 
 	glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * GetModelMatrix();
 		
 	//disable writting to depth buffer
@@ -186,6 +190,15 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	//update mvp transform uniform in shader
 	int modelViewProjectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "modelViewProjectionMatrix"); 
 	ogl->glUniformMatrix4fv(modelViewProjectionMatrixLocation, 1, false, glm::value_ptr(mvpMatrix));
+	
+	int modelMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "modelMatrix"); 
+	ogl->glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
+	
+	int viewMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "viewMatrix"); 
+	ogl->glUniformMatrix4fv(viewMatrixLocation, 1, false, glm::value_ptr(viewMatrix));
+	
+	int projectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "projectionMatrix"); 
+	ogl->glUniformMatrix4fv(projectionMatrixLocation, 1, false, glm::value_ptr(projectionMatrix));
 	
 	//update 3d texture
 	int volumeTextureLocation = ogl->glGetUniformLocation(programShaderObject, "volumeTexture"); 
