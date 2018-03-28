@@ -19,7 +19,12 @@ void main()
 {
 	//compute outputs
 	fragmentPosition = vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
-	gl_Position = modelViewProjectionMatrix * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
+	mat4 mvMat = viewMatrix * modelMatrix; 
+	mat4 mvpMat = mat4(1.0f);
+	mvpMat[3][0] = mvMat[3][0]; 
+	mvpMat[3][1] = mvMat[3][1]; 
+	mvpMat[3][2] = mvMat[3][2]; 
+	gl_Position = projectionMatrix * mvpMat * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
 }
 )";
  
@@ -28,11 +33,20 @@ std::string TextureVolumeObject::fragSrc = R"(
 //inputs
 in vec4 fragmentPosition;
 //uniforms
+uniform mat4 modelViewProjectionMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 uniform sampler3D volumeTexture;
 //main
 void main()
 {
-  	gl_FragColor = texture3D(volumeTexture, fragmentPosition.xyz);
+	
+	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fragmentPosition.xyz, 0.0f);
+	vec4 col = texture3D(volumeTexture, fragPos.xyz - vec3(0.5f, 0.5f, 0.5f));
+	if(col.w <= 0.0001f)
+		discard; 
+  	gl_FragColor = col;
 }
 )";
  
