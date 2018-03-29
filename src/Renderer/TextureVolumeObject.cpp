@@ -43,7 +43,7 @@ void main()
 {
 	
 	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fragmentPosition.xyz, 0.0f);
-	vec4 col = texture3D(volumeTexture, fragPos.xyz - vec3(0.5f, 0.5f, 0.5f));
+	vec4 col = texture3D(volumeTexture, fragPos.xyz + vec3(0.5f, 0.5, 0.5f));
 	if(col.w <= 0.0001f)
 		discard; 
   	gl_FragColor = col;
@@ -129,18 +129,18 @@ void TextureVolumeObject::Init()
 		Vertex v;
 		v.w = 1.0;
 		
-		v.z = (double)i / (double)volumeSlices * -2.0 + 1.0;
-		v.x = -1.0;
-		v.y = -1.0;
+		v.z = (double)i / (double)volumeSlices * -1.0 + 0.5;
+		v.x = -0.5;
+		v.y = -0.5;
 		vertexData[i * 4 + 0] = v;
-		v.x = 1.0;
-		v.y = -1.0;
+		v.x = 0.5;
+		v.y = -0.5;
 		vertexData[i * 4 + 1] = v;
-		v.x = 1.0;
-		v.y = 1.0;
+		v.x = 0.5;
+		v.y = 0.5;
 		vertexData[i * 4 + 2] = v;
-		v.x = -1.0;
-		v.y = 1.0;
+		v.x = -0.5;
+		v.y = 0.5;
 		vertexData[i * 4 + 3] = v;
 	}
 	
