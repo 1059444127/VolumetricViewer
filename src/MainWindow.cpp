@@ -12,7 +12,7 @@ MainWindow::MainWindow()
 	importAction = fileMenu->addAction("Import");
 	QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(Save()));
 	QObject::connect(loadAction, SIGNAL(triggered()), this, SLOT(Load()));
-	QObject::connect(importAction, SIGNAL(triggered()), this, SLOT(Load()));
+	QObject::connect(importAction, SIGNAL(triggered()), this, SLOT(Import()));
 	
 	//central
 	setCentralWidget(&renderViewport);
@@ -48,5 +48,6 @@ void MainWindow::Load()
 
 void MainWindow::Import()
 {
+	emit ;
 	std::cout << "Import Project" << std::endl;
 }

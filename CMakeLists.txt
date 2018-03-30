@@ -16,10 +16,16 @@ find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL)
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
 #glm
-set(GLM_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
+set(GLM_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/glm CACHE PATH "Path to GLM")
 include_directories(${GLM_INC_DIR})
 
 #DCMTK
+set(DCMTK_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/dcmtk/build/install CACHE PATH "Path to DCMTK")
+set(DCMTK_INC_DIR ${DCMTK_ROOT_DIR}/include)
+set(DCMTK_LIB_DIR ${DCMTK_ROOT_DIR}/lib)
+set(DCMTK_BIN_DIR ${DCMTK_ROOT_DIR}/bin)
+include_directories(${DCMTK_INC_DIR})
+link_directories(${DCMTK_LIB_DIR})
 
 
 include_directories(src)

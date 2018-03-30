@@ -13,6 +13,11 @@
 #include <glm/ext.hpp>
 
 #include <iostream>
+#include <math.h>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <algorithm>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>

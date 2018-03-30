@@ -21,6 +21,8 @@ class MainWindow: public QMainWindow
 		MainWindow();
 		void ExpandToFitScreen();
 		
+	signals:
+		
 	public slots:
 		void Save();
 		void Load();

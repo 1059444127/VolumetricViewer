@@ -2,6 +2,7 @@
 set (volumetricRendererSrc 
 		Util.cpp
 		Main.cpp
+		Image3D.cpp
 		MainWindow.cpp
 		HelperWidgets.cpp
 		ControlPanel.cpp
@@ -13,8 +14,12 @@ set (volumetricRendererSrc
 		Renderer/TextureVolumeObject.cpp
 		Renderer/CameraObject.cpp
 		Renderer/CameraControl.cpp
+		
+		IO/Image3DFromDicomFile.cpp
 )
 
 add_executable(VolumetricRenderer ${volumetricRendererSrc})
 
 target_link_libraries(VolumetricRenderer Qt5::Core Qt5::Widgets Qt5::OpenGL)
+
+target_link_libraries(VolumetricRenderer dcmdata dcmimgle dcmimage )
