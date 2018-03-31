@@ -80,3 +80,8 @@ void RenderViewport::keyReleaseEvent(QKeyEvent *event)
 {
 	cameraControl->keyReleaseEvent(event); 
 }
+
+void RenderViewport::ImportDicomFile(QString fileName)
+{
+	
+}

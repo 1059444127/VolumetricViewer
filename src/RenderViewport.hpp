@@ -35,4 +35,7 @@ class RenderViewport: public QOpenGLWidget
 	public:
 		RenderViewport();
 		
+	public slots:
+		void ImportDicomFile(QString fileName);
+		
 };
