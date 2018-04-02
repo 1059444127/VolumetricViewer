@@ -37,3 +37,23 @@ void* Image3D::Data()
 {
 	return data; 
 }
+
+uint64_t Image3D::Width()
+{
+	return width; 
+}
+
+uint64_t Image3D::Height()
+{
+	return height; 
+}
+
+uint64_t Image3D::Depth()
+{
+	return depth; 
+}
+
+uint64_t Image3D::ByteSize()
+{
+	return width * height * depth * pixelSize; 
+}

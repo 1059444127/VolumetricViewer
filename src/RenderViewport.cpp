@@ -5,6 +5,8 @@
 
 #include "TestGenerateVolume.hpp"
 
+#include "IO/Image3DFromDicomFile.hpp"
+
 
 RenderViewport::RenderViewport()
 {
@@ -83,5 +85,18 @@ void RenderViewport::keyReleaseEvent(QKeyEvent *event)
 
 void RenderViewport::ImportDicomFile(QString fileName)
 {
+	
+}
+
+void RenderViewport::ImportDicomFileSequence(QStringList fileNames)
+{
+	std::vector<std::string> files;
+	for(int i = 0; i < fileNames.size(); i++)
+		files.push_back(fileNames.at(i).toStdString());
+	Image3D image3D;
+	bool loadGood = Image3DFromDicomFileSequence(&image3D, files);
+	if(!loadGood)
+		return; 
+	textureVolume->LoadData(image3D.Data(), image3D.Width() * image3D.Height() * image3D.Depth());
 	
 }

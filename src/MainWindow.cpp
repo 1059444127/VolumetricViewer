@@ -10,9 +10,11 @@ MainWindow::MainWindow()
 	saveAction = fileMenu->addAction("Save");
 	loadAction = fileMenu->addAction("Load");
 	importAction = fileMenu->addAction("Import");
+	importSequenceAction = fileMenu->addAction("Import Sequence");
 	QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(Save()));
 	QObject::connect(loadAction, SIGNAL(triggered()), this, SLOT(Load()));
 	QObject::connect(importAction, SIGNAL(triggered()), this, SLOT(Import()));
+	QObject::connect(importSequenceAction, SIGNAL(triggered()), this, SLOT(ImportSequence()));
 		
 	//central
 	setCentralWidget(&renderViewport);
@@ -38,19 +40,26 @@ void MainWindow::ExpandToFitScreen()
 
 void MainWindow::Save()
 {
-	std::cout << "Save Project" << std::endl;
+	std::cout << "Save" << std::endl;
 }
 
 void MainWindow::Load()
 {
-	std::cout << "Load Project" << std::endl;
+	std::cout << "Load" << std::endl;
 }
 
 void MainWindow::Import()
 {
 	
 	QString fileName;
-	fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/jana", tr("types of Files (*.png *.jpg *.bmp)"));
+	fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("types of Files(*.dcm)"));
 	renderViewport.ImportDicomFile(fileName);
-	std::cout << "Import Project" << std::endl;
+	std::cout << "Import" << std::endl;
+}
+
+void MainWindow::ImportSequence()
+{
+	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*.dcm)"));
+	renderViewport.ImportDicomFileSequence(fileNames);
+	std::cout << "Import Sequence" << std::endl;
 }
