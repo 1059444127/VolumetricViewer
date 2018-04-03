@@ -8,6 +8,7 @@
 
 RenderViewport::RenderViewport()
 {
+	setFocusPolicy(Qt::ClickFocus);
 }
 
 void RenderViewport::initializeGL()

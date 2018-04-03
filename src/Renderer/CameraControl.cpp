@@ -118,7 +118,17 @@ void CameraControl::mouseMoveEvent(QMouseEvent *event)
 
 void CameraControl::keyPressEvent(QKeyEvent *event)
 {
+	
 	if(event->key() == Qt::Key_Shift) shiftState = true; 
+	
+	if(event->key() == Qt::Key_F)
+	{
+		std::cout << "F!!!" << std::endl; 
+		posX = 0;
+		posY = 0;
+		posZ = 0;
+		UpdateCamera(); 
+	}
 }
 
 void CameraControl::keyReleaseEvent(QKeyEvent *event)
