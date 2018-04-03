@@ -13,6 +13,11 @@
 #include <glm/ext.hpp>
 
 #include <iostream>
+#include <math.h>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <algorithm>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
@@ -39,6 +44,7 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QFileDialog>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QOpenGLWidget>

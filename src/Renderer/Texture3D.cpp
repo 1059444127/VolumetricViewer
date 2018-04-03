@@ -1,7 +1,6 @@
 #include "Texture3D.hpp"
 
 
-
 Texture3D::Texture3D()
 {
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
@@ -50,6 +49,16 @@ void Texture3D::LoadData(void* buffer, uint64_t count)
 
 	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
 	ogl->glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+	ogl->glBindTexture(GL_TEXTURE_3D, 0);
+}
+
+void Texture3D::LoadDataSlice(void* buffer, uint64_t count, uint64_t Z)
+{
+	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+
+	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
+	ogl->glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, Z, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
 	ogl->glBindTexture(GL_TEXTURE_3D, 0);
 }

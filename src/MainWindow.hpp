@@ -17,6 +17,7 @@ class MainWindow: public QMainWindow
 		QAction* saveAction;
 		QAction* loadAction;
 		QAction* importAction;
+		QAction* importSequenceAction;
 		
 		MainWindow();
 		void ExpandToFitScreen();
@@ -25,4 +26,5 @@ class MainWindow: public QMainWindow
 		void Save();
 		void Load();
 		void Import();
+		void ImportSequence();
 };
