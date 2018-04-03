@@ -29,10 +29,10 @@ void RenderViewport::initializeGL()
 	
 	textureVolume = new Texture3D; 
 	
-	textureVolume->Allocate(512, 512, 512);
+	//textureVolume->Allocate(512, 512, 512);
 	void* data; 
-	TestGenerateVolume(&data, 512, 512, 512);
-	textureVolume->LoadData(data, 512 * 512 * 512);
+	//TestGenerateVolume(&data, 512, 512, 512);
+	//textureVolume->LoadData(data);
 	
 	textureVolumeObject->SetVolumeTexture(textureVolume); 
 }
@@ -98,6 +98,8 @@ void RenderViewport::ImportDicomFileSequence(QStringList fileNames)
 	bool loadGood = Image3DFromDicomFileSequence(&image3D, files);
 	if(!loadGood)
 		return; 
-	textureVolume->LoadData(image3D.Data(), image3D.Width() * image3D.Height() * image3D.Depth());
+	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth());
+	textureVolume->LoadData(image3D.Data());
 	
+	update();
 }

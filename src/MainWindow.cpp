@@ -59,7 +59,7 @@ void MainWindow::Import()
 
 void MainWindow::ImportSequence()
 {
-	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*.dcm)"));
+	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*)"));
 	renderViewport.ImportDicomFileSequence(fileNames);
 	std::cout << "Import Sequence" << std::endl;
 }

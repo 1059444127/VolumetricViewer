@@ -1,8 +1,12 @@
 #include "Image3DFromDicomFile.hpp"
 
 
+#include <dcmtk/config/osconfig.h>    /* make sure OS specific configuration is included first */
+#include <dcmtk/dcmdata/dctk.h>
 #include <dcmtk/dcmimage/diregist.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
+
+
 
 
 bool Image3DFromDicomFile(Image3D* image, std::string fileName)
@@ -40,6 +44,12 @@ bool Image3DFromDicomFile(Image3D* image, std::string fileName)
 
 bool Image3DFromDicomFileSequence(Image3D* image, std::vector<std::string> fileNames)
 {
+	/* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        std::cerr << "dcmDataDict is not loaded" << std::endl;
+    }
+	
 	if(fileNames.size() == 0)
 		return false; 
 	//Doo check to see if all slices are same width and height and have some frame data
@@ -57,12 +67,20 @@ bool Image3DFromDicomFileSequence(Image3D* image, std::vector<std::string> fileN
 			uint64_t D = img->getNumberOfFrames();
 			delete img;
 			
-			if(D < 1) return false; 
+			if(D < 1)
+			{
+				std::cerr << "Image3DFromDicomFileSequence:Number of frames in dicom image zero:" << fileNames[i] << std::endl; 
+				return false; 
+			}
 			
 			width = W;
 			height = H;
 			
-			if(width == 0 || height == 0) return false; 
+			if(width == 0 || height == 0)
+			{	
+				std::cerr << "Image3DFromDicomFileSequence:width or hieght of image zero:" << fileNames[i] << std::endl; 		
+				return false; 
+			}
 			
 			firstPass = false; 	
 		}
@@ -74,24 +92,46 @@ bool Image3DFromDicomFileSequence(Image3D* image, std::vector<std::string> fileN
 			uint64_t D = img->getNumberOfFrames();
 			delete img;
 			
-			if(D < 1) return false; 
+			if(D < 1)
+			{
+				std::cerr << "Image3DFromDicomFileSequence:Number of frames in dicom image zero:" << fileNames[i] << std::endl; 
+				return false; 
+			}
 			
-			if(W != width) return false;
-			if(H != height) return false; 
+			if(W != width) 
+			{
+				std::cerr << "Image3DFromDicomFileSequence:width varies:" << fileNames[i] << std::endl; 
+				return false;
+			}
+			if(H != height) 
+			{
+				std::cerr << "Image3DFromDicomFileSequence:height varies:" << fileNames[i] << std::endl; 
+				return false; 
+			}
 		}
 		
 	}
 	
+	//Alocate Image
+	std::cout << "Image3DFromDicomFileSequence: Allocating image memory " << width << " " << height << " " << fileNames.size() << std::endl; 
 	image->Allocate(width, height, fileNames.size(), 4);
-	std::cout << "Image3DFromDicomFileSequence: copying image data to 3d image" << std::endl; 
+
 	//Load each frame 
+	std::cout << "Image3DFromDicomFileSequence: copying image data to 3d image" << std::endl; 
 	for(int i = 0; i < fileNames.size(); i++)
 	{
 		DicomImage* img = new DicomImage(fileNames[i].c_str());
 		
 		unsigned char* imageData = (unsigned char*)image->Data() + width * height * i; 
 		
-		img->getOutputData(imageData, width * height * 4, 32); 
+		int status = img->getOutputData(imageData, width * height * 4, 32); 
+		if(!status)
+		{
+			std::cout << "Image3DFromDicomFileSequence:getOutputData failed with status" <<  status << std::endl; 
+			return false; 
+		} 
+		
+		std::cout << "Image3DFromDicomFileSequence:getOutputData status code:"  << status << std::endl; 
 		
 		delete img;
 	}
