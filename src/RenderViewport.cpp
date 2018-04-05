@@ -114,7 +114,7 @@ void RenderViewport::ImportTIFFFileSequence(QStringList fileNames)
 	bool loadGood = Image3DFromTIFFFileSequence(&image3D, files);
 	if(!loadGood)
 		return; 
-	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth());
+	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth(), false);
 	textureVolume->LoadData(image3D.Data());
 	
 	update();

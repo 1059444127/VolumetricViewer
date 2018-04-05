@@ -44,7 +44,8 @@ void main()
 	
 	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fragmentPosition.xyz, 0.0f);
 	vec4 col = texture3D(volumeTexture, fragPos.xyz + vec3(0.5f, 0.5, 0.5f));
-	if(col.w <= 0.0001f || col.b <= 0.2f)
+	col.w = col.r;
+	if(col.w <= 0.0001f)
 		discard; 
   	gl_FragColor = col;
 }
