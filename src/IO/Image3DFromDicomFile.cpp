@@ -122,7 +122,7 @@ bool Image3DFromDicomFileSequence(Image3D* image, std::vector<std::string> fileN
 	{
 		DicomImage* img = new DicomImage(fileNames[i].c_str());
 		
-		unsigned char* imageData = (unsigned char*)image->Data() + width * height * i; 
+		unsigned char* imageData = (unsigned char*)image->Data() + width * height * 4 * i; 
 		
 		int status = img->getOutputData(imageData, width * height * 4, 32); 
 		if(!status)

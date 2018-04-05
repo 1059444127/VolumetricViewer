@@ -27,6 +27,15 @@ set(DCMTK_BIN_DIR ${DCMTK_ROOT_DIR}/bin)
 include_directories(${DCMTK_INC_DIR})
 link_directories(${DCMTK_LIB_DIR})
 
+#libtiff
+set(LIBTIFF_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/libtiff/build/install CACHE PATH "Path to libtiff")
+set(LIBTIFF_INC_DIR ${LIBTIFF_ROOT_DIR}/include)
+set(LIBTIFF_LIB_DIR ${LIBTIFF_ROOT_DIR}/lib)
+set(LIBTIFF_BIN_DIR ${LIBTIFF_ROOT_DIR}/bin)
+include_directories(${LIBTIFF_INC_DIR})
+link_directories(${LIBTIFF_LIB_DIR})
+
+
 
 include_directories(src)
 add_subdirectory(src)
