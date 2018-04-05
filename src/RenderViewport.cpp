@@ -6,6 +6,7 @@
 #include "TestGenerateVolume.hpp"
 
 #include "IO/Image3DFromDicomFile.hpp"
+#include "IO/Image3DFromTIFFFile.hpp"
 
 
 RenderViewport::RenderViewport()
@@ -96,6 +97,21 @@ void RenderViewport::ImportDicomFileSequence(QStringList fileNames)
 		files.push_back(fileNames.at(i).toStdString());
 	Image3D image3D;
 	bool loadGood = Image3DFromDicomFileSequence(&image3D, files);
+	if(!loadGood)
+		return; 
+	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth());
+	textureVolume->LoadData(image3D.Data());
+	
+	update();
+}
+
+void RenderViewport::ImportTIFFFileSequence(QStringList fileNames)
+{
+	std::vector<std::string> files;
+	for(int i = 0; i < fileNames.size(); i++)
+		files.push_back(fileNames.at(i).toStdString());
+	Image3D image3D;
+	bool loadGood = Image3DFromTIFFFileSequence(&image3D, files);
 	if(!loadGood)
 		return; 
 	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth());

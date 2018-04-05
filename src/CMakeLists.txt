@@ -16,6 +16,7 @@ set (volumetricRendererSrc
 		Renderer/CameraControl.cpp
 		
 		IO/Image3DFromDicomFile.cpp
+		IO/Image3DFromTIFFFile.cpp
 )
 
 add_executable(VolumetricRenderer ${volumetricRendererSrc})

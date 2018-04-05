@@ -20,7 +20,7 @@ Texture3D::Texture3D()
 	ogl->glBindTexture(GL_TEXTURE_3D, 0);
 }
 
-void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d)
+void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d, bool compressed)
 {
 	width = w;
 	height = h;
@@ -30,9 +30,16 @@ void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d)
 
 	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
 	
-	ogl->glTexImage3D(GL_TEXTURE_3D, 0, GL_COMPRESSED_RGBA, width, height, depth,
-								0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-								
+	if(compressed)
+	{
+		ogl->glTexImage3D(GL_TEXTURE_3D, 0, GL_COMPRESSED_RGBA, width, height, depth,
+						  0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	}
+	else
+	{
+		ogl->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, width, height, depth,
+						  0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	}
 	ogl->glBindTexture(GL_TEXTURE_3D, 0);
 }
 

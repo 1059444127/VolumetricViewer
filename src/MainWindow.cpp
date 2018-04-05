@@ -10,11 +10,25 @@ MainWindow::MainWindow()
 	saveAction = fileMenu->addAction("Save");
 	loadAction = fileMenu->addAction("Load");
 	importAction = fileMenu->addAction("Import");
-	importSequenceAction = fileMenu->addAction("Import Sequence");
+	importSequenceAction = fileMenu->addMenu("Import Sequence");
+	QAction* dcmSqeuenceAction = importSequenceAction->addAction("dcm");
+	QAction* tiffSequenceAction = importSequenceAction->addAction("tiff");
 	QObject::connect(saveAction, SIGNAL(triggered()), this, SLOT(Save()));
 	QObject::connect(loadAction, SIGNAL(triggered()), this, SLOT(Load()));
-	QObject::connect(importAction, SIGNAL(triggered()), this, SLOT(Import()));
-	QObject::connect(importSequenceAction, SIGNAL(triggered()), this, SLOT(ImportSequence()));
+	
+	
+	QObject::connect(dcmSqeuenceAction, &QAction::triggered, [this]()
+	{
+		QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*)"));
+		renderViewport.ImportDicomFileSequence(fileNames);
+		std::cout << "Import Sequence" << std::endl;
+	});
+	QObject::connect(tiffSequenceAction, &QAction::triggered, [this]()
+	{
+		QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*)"));
+		renderViewport.ImportTIFFFileSequence(fileNames);
+		std::cout << "Import Sequence" << std::endl;
+	});
 		
 	//central
 	setCentralWidget(&renderViewport);
@@ -46,20 +60,4 @@ void MainWindow::Save()
 void MainWindow::Load()
 {
 	std::cout << "Load" << std::endl;
-}
-
-void MainWindow::Import()
-{
-	
-	QString fileName;
-	fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("types of Files(*.dcm)"));
-	renderViewport.ImportDicomFile(fileName);
-	std::cout << "Import" << std::endl;
-}
-
-void MainWindow::ImportSequence()
-{
-	QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Image"), "", tr("types of Files(*)"));
-	renderViewport.ImportDicomFileSequence(fileNames);
-	std::cout << "Import Sequence" << std::endl;
 }

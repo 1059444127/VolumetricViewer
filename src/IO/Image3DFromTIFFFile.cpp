@@ -1,6 +1,6 @@
-#include "Image3DFromTIFFFileSequence.hpp"
+#include "Image3DFromTIFFFile.hpp"
 
-
+#include <tiffio.h>
 
 bool Image3DFromTIFFFileSequence(Image3D* image, std::vector<std::string> fileNames)
 {
@@ -36,7 +36,7 @@ bool Image3DFromTIFFFileSequence(Image3D* image, std::vector<std::string> fileNa
 	//Check if images have some wifdth and height
 	if(width <= 0 || height <= 0)
 	{
-		std::cerr << "Image3DFromTIFFFileSequence: Images have zero size" << fileNames[i] << std::endl;
+		std::cerr << "Image3DFromTIFFFileSequence: Images have zero size" << std::endl;
 		return false;
 	}
 	
@@ -51,7 +51,7 @@ bool Image3DFromTIFFFileSequence(Image3D* image, std::vector<std::string> fileNa
 		if (tif) 
 		{
 			unsigned char* imageData = (unsigned char*)image->Data() + width * height * 4 * i;
-			TIFFReadRGBAImage(tif, w, h, imageData, 0);
+			TIFFReadRGBAImage(tif, width, height, (uint32_t*)imageData, 0);
 			TIFFClose(tif);
 		}
 	}
