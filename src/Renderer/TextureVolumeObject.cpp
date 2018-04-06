@@ -44,8 +44,11 @@ void main()
 {
 	float hasp = texDim.x / texDim.y;
 	float dasp = texDim.z / texDim.y;
-	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fragmentPosition.xyz, 0.0f);
-	vec4 col = texture3D(volumeTexture, fragPos.xyz + vec3(0.5f, 0.5, 0.5f));
+	
+	vec3 fp = fragmentPosition.xyz;
+	
+	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fp, 0.0f);
+	vec4 col = texture3D(volumeTexture, (fragPos.xyz + vec3(0.5f, 0.5f, 0.5f)) * vec3(1, 1, 1/dasp));
 	col.w = col.r;
 	if(col.w <= 0.0001f)
 		discard; 
@@ -132,18 +135,21 @@ void TextureVolumeObject::Init()
 		Vertex v;
 		v.w = 1.0;
 		
-		v.z = (double)i / (double)volumeSlices * -1.0 + 0.5;
-		v.x = -0.5;
-		v.y = -0.5;
+		
+		double extent = 0.5; 
+		
+		v.z = (double)i / (double)volumeSlices * -extent * 2 + extent;
+		v.x = -extent;
+		v.y = -extent;
 		vertexData[i * 4 + 0] = v;
-		v.x = 0.5;
-		v.y = -0.5;
+		v.x = extent;
+		v.y = -extent;
 		vertexData[i * 4 + 1] = v;
-		v.x = 0.5;
-		v.y = 0.5;
+		v.x = extent;
+		v.y = extent;
 		vertexData[i * 4 + 2] = v;
-		v.x = -0.5;
-		v.y = 0.5;
+		v.x = -extent;
+		v.y = extent;
 		vertexData[i * 4 + 3] = v;
 	}
 	
