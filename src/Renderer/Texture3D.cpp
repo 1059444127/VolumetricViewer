@@ -73,3 +73,18 @@ unsigned int Texture3D::GetTextureId()
 {
 	return textureId; 
 }
+
+uint64_t Texture3D::Width()
+{
+	return width; 
+}
+
+uint64_t Texture3D::Height()
+{
+	return height;
+}
+
+uint64_t Texture3D::Depth()
+{
+	return depth; 
+}

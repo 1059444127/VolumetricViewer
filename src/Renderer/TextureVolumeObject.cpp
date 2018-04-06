@@ -38,10 +38,12 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform sampler3D volumeTexture;
+uniform vec3 texDim;
 //main
 void main()
 {
-	
+	float hasp = texDim.x / texDim.y;
+	float dasp = texDim.z / texDim.y;
 	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fragmentPosition.xyz, 0.0f);
 	vec4 col = texture3D(volumeTexture, fragPos.xyz + vec3(0.5f, 0.5, 0.5f));
 	col.w = col.r;
@@ -216,6 +218,8 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	ogl->glUniformMatrix4fv(projectionMatrixLocation, 1, false, glm::value_ptr(projectionMatrix));
 	
 	//update 3d texture
+	int texDimLocation = ogl->glGetUniformLocation(programShaderObject, "texDim"); 
+	ogl->glUniform3f(texDimLocation, (float)volumeTexture->Width(), (float)volumeTexture->Height(), (float)volumeTexture->Depth());
 	int volumeTextureLocation = ogl->glGetUniformLocation(programShaderObject, "volumeTexture"); 
 	ogl->glUniform1i(volumeTextureLocation, 0);
 	ogl->glActiveTexture(GL_TEXTURE0 + 0);

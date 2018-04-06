@@ -19,4 +19,7 @@ class Texture3D
 		void LoadData(void* buffer);
 		void LoadDataSlice(void* buffer, uint64_t Z);
 		unsigned int GetTextureId();
+		uint64_t Width();
+		uint64_t Height();
+		uint64_t Depth();
 };
