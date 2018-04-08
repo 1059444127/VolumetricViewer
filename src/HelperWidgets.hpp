@@ -15,8 +15,8 @@ class Vector3Chooser: public QWidget
 		
 	public:
 		Vector3Chooser(QString name, double defaultX=0, double defaultY=0, double defaultZ=0, 
-					   double minX=-10000, double minY=-10000, double minZ=-10000, 
-					   double maxX=10000, double maxY=10000, double maxZ=10000);
+					   double minX=-1000000, double minY=-1000000, double minZ=-1000000, 
+					   double maxX=1000000, double maxY=1000000, double maxZ=1000000);
 		
 	signals:
 		void valueChanged(double xV, double yV, double zV);

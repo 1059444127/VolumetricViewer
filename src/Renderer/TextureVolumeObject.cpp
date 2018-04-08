@@ -34,6 +34,7 @@ in vec4 fragmentPosition;
 uniform mat4 modelViewProjectionMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 invMVMatrix;
 uniform mat4 projectionMatrix;
 uniform sampler3D volumeTexture;
 uniform vec3 texDim;
@@ -47,12 +48,11 @@ void main()
 	
 	vec3 fp = fragmentPosition.xyz;
 	
-	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fp, 0.0f);
+	vec4 fragPos = invMVMatrix * vec4(fp, 0.0f);
 	vec4 col = texture3D(volumeTexture, (fragPos.xyz * vec3(1, 1, 1/dasp) + vec3(0.5f, 0.5f, 0.5f)));
-	col.w = col.r;
 	if(col.w <= 0.0001f)
 		discard; 
-  	gl_FragColor = col;
+  	gl_FragColor = vec4(col.r, col.r, col.r, col.r);
 }
 )";
  
@@ -194,6 +194,7 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	//compute mvp matrix
 	glm::mat4 modelMatrix = GetModelMatrix(); 
 	glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * GetModelMatrix();
+	glm::mat4 invMVMatrix = glm::inverse(viewMatrix * GetModelMatrix());
 		
 	//disable writting to depth buffer
 	ogl->glEnable(GL_DEPTH_TEST);
@@ -224,6 +225,9 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	
 	int projectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "projectionMatrix"); 
 	ogl->glUniformMatrix4fv(projectionMatrixLocation, 1, false, glm::value_ptr(projectionMatrix));
+	
+	int invMVMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "invMVMatrix"); 
+	ogl->glUniformMatrix4fv(invMVMatrixLocation, 1, false, glm::value_ptr(invMVMatrix));
 	
 	//update 3d texture
 	int texDimLocation = ogl->glGetUniformLocation(programShaderObject, "texDim"); 
