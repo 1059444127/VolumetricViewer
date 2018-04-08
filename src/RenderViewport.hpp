@@ -7,6 +7,7 @@
 #include "Renderer/TextureVolumeObject.hpp"
 #include "Renderer/Texture3D.hpp"
 #include "Renderer/CameraControl.hpp"
+#include "Renderer/AxisObject.hpp"
 
 
 class RenderViewport: public QOpenGLWidget
@@ -15,11 +16,6 @@ class RenderViewport: public QOpenGLWidget
 	protected:
 		int windowWidth;
 		int windowHeight; 
-	
-		CameraObject* cameraObject; 
-		CameraControl* cameraControl; 
-		TextureVolumeObject* textureVolumeObject; 
-		Texture3D* textureVolume; 
 	
 		void initializeGL();
 		void paintGL();
@@ -33,9 +29,16 @@ class RenderViewport: public QOpenGLWidget
 		void keyReleaseEvent(QKeyEvent *event);
 		
 	public:
+		CameraObject* cameraObject; 
+		CameraControl* cameraControl; 
+		TextureVolumeObject* textureVolumeObject; 
+		Texture3D* textureVolume; 
+		AxisObject* axisObject;
+		
 		RenderViewport();
 		
 	public slots:
+		void EnableDisableAxis(bool en);
 		void ImportDicomFile(QString fileName);
 		void ImportDicomFileSequence(QStringList fileNames);
 		void ImportTIFFFileSequence(QStringList fileNames);

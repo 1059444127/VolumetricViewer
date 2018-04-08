@@ -1,66 +1,49 @@
-#include "TextureVolumeObject.hpp"
+#include "AxisObject.hpp"
 
 
-std::string TextureVolumeObject::vertSrc= R"(
+#include "Util.hpp"
+
+
+std::string AxisObject::vertSrc= R"(
 #version 330
 //attribs
 layout(location = 0) in vec4 pointPosition;
+layout(location = 1) in vec4 pointColor;
+
 //transforms
 uniform mat4 modelViewProjectionMatrix;
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
+
 //outputs
-out vec4 fragmentPosition;
+out vec4 fragColor;
+
 //main
 void main()
 {
 	//compute outputs
-	fragmentPosition = vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
-	mat4 mvMat = viewMatrix * modelMatrix; 
-	mat4 mvpMat = mat4(1.0f);
-	mvpMat[3][0] = mvMat[3][0]; 
-	mvpMat[3][1] = mvMat[3][1]; 
-	mvpMat[3][2] = mvMat[3][2]; 
-	gl_Position = projectionMatrix * mvpMat * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
+	fragColor = pointColor; 
+	gl_Position = modelViewProjectionMatrix * vec4(pointPosition.x, pointPosition.y, pointPosition.z, 1.0f);
 }
 )";
  
-std::string TextureVolumeObject::fragSrc = R"(
+std::string AxisObject::fragSrc = R"(
 #version 330
 //inputs
-in vec4 fragmentPosition;
+in vec4 fragColor;
+
 //uniforms
-uniform mat4 modelViewProjectionMatrix;
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-uniform sampler3D volumeTexture;
-uniform vec3 texDim;
-uniform float brightness;
-uniform float contrast;
+
 //main
 void main()
 {
-	float hasp = texDim.x / texDim.y;
-	float dasp = texDim.z / texDim.y;
-	
-	vec3 fp = fragmentPosition.xyz;
-	
-	vec4 fragPos = inverse(viewMatrix * modelMatrix) * vec4(fp, 0.0f);
-	vec4 col = texture3D(volumeTexture, (fragPos.xyz * vec3(1, 1, 1/dasp) + vec3(0.5f, 0.5f, 0.5f)));
-	col.w = col.r;
-	if(col.w <= 0.0001f)
-		discard; 
-  	gl_FragColor = col;
+  	gl_FragColor = fragColor;
 }
 )";
  
-int TextureVolumeObject::programShaderObject;
-int TextureVolumeObject::vertexShaderObject;
-int TextureVolumeObject::fragmentShaderObject;
+int AxisObject::programShaderObject;
+int AxisObject::vertexShaderObject;
+int AxisObject::fragmentShaderObject;
  
-void TextureVolumeObject::InitSystem()
+void AxisObject::InitSystem()
 {
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
 	
@@ -103,20 +86,18 @@ void TextureVolumeObject::InitSystem()
 	}
 	else
 	{
-		std::cout << "TextureVolumeObject::CompileShader:compile success " << std::endl;
+		std::cout << "AxisObject::CompileShader:compile success " << std::endl;
 	}
 }
 
 
-TextureVolumeObject::TextureVolumeObject(unsigned int slices)
+AxisObject::AxisObject()
 {
-	volumeSlices = slices;
-	brightness = 0;
-	contrast = 1;
+	
 }
 
 
-void TextureVolumeObject::Init()
+void AxisObject::Init()
 {
 	//Init Buffers and VAO for rendering	
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
@@ -129,39 +110,59 @@ void TextureVolumeObject::Init()
 	ogl->glBindVertexArray(vertexArrayObject);
 	
 	//build buffers
-	std::vector<Vertex> vertexData(4 * volumeSlices); 
-	for(int i = 0; i < volumeSlices; i++)
-	{
-		Vertex v;
-		v.w = 1.0;
-		
-		
-		double extent = 0.5; 
-		
-		v.z = (double)i / (double)volumeSlices * -extent * 2 + extent;
-		v.x = -extent;
-		v.y = -extent;
-		vertexData[i * 4 + 0] = v;
-		v.x = extent;
-		v.y = -extent;
-		vertexData[i * 4 + 1] = v;
-		v.x = extent;
-		v.y = extent;
-		vertexData[i * 4 + 2] = v;
-		v.x = -extent;
-		v.y = extent;
-		vertexData[i * 4 + 3] = v;
-	}
+	std::vector<Vertex> vertexData(6); 
+
+	Vertex v;
+	v.w = 1;
+	v.a = 255;
 	
-	std::vector<unsigned int> elementData(volumeSlices * 6); 
-	for(int i = 0; i < volumeSlices; i++)
+	v.x = -1000;
+	v.y = 0;
+	v.z = 0;
+	v.r = 255;
+	v.g = 0;
+	v.b = 0;
+	vertexData[0] = v;
+	v.x = 1000;
+	v.y = 0;
+	v.z = 0;
+	v.r = 255;
+	v.g = 0;
+	v.b = 0;
+	vertexData[1] = v;
+	v.x = 0;
+	v.y = -1000;
+	v.z = 0;
+	v.r = 0;
+	v.g = 255;
+	v.b = 0;
+	vertexData[2] = v;
+	v.x = 0;
+	v.y = 1000;
+	v.z = 0;
+	v.r = 0;
+	v.g = 255;
+	v.b = 0;
+	vertexData[3] = v;
+	v.x = 0;
+	v.y = 0;
+	v.z = -1000;
+	v.r = 0;
+	v.g = 0;
+	v.b = 255;
+	vertexData[4] = v;
+	v.x = 0;
+	v.y = 0;
+	v.z = 1000;
+	v.r = 0;
+	v.g = 0;
+	v.b = 255;
+	vertexData[5] = v;
+	
+	std::vector<unsigned int> elementData(6); 
+	for(int i = 0; i < 6; i++)
 	{
-		elementData[i * 6 + 0] = i * 4  + 0;
-		elementData[i * 6 + 1] = i * 4  + 1;
-		elementData[i * 6 + 2] = i * 4  + 2;
-		elementData[i * 6 + 3] = i * 4  + 2;
-		elementData[i * 6 + 4] = i * 4  + 3;
-		elementData[i * 6 + 5] = i * 4  + 0;
+		elementData[i] = i;
 	}
 	
 	ogl->glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -173,6 +174,8 @@ void TextureVolumeObject::Init()
 	//set vertex attributes
 	ogl->glEnableVertexAttribArray(0);
 	ogl->glVertexAttribPointer(0, 4, GL_FLOAT, false, sizeof(Vertex), (void*)((uintptr_t)0));
+	ogl->glEnableVertexAttribArray(1);
+	ogl->glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, true, sizeof(Vertex), (void*)((uintptr_t)(0 + sizeof(float) * 4 )));
 	
 	//Unbind VAO
 	ogl->glBindVertexArray(0);
@@ -180,24 +183,21 @@ void TextureVolumeObject::Init()
 	//Unbind array and element buffers
 	ogl->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	ogl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
-	volumeTexture = NULL; 
 }
 
 
-void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+void AxisObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
 	if(!visible) return; 
 	
+	std::cout << "Rendering Axis" << std::endl; 
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
 	
 	//compute mvp matrix
 	glm::mat4 modelMatrix = GetModelMatrix(); 
 	glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * GetModelMatrix();
 		
-	//disable writting to depth buffer
 	ogl->glEnable(GL_DEPTH_TEST);
-	ogl->glDepthMask(GL_FALSE);
 	
 	//enable backface culling 
 	ogl->glEnable(GL_CULL_FACE); 
@@ -216,42 +216,11 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	int modelViewProjectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "modelViewProjectionMatrix"); 
 	ogl->glUniformMatrix4fv(modelViewProjectionMatrixLocation, 1, false, glm::value_ptr(mvpMatrix));
 	
-	int modelMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "modelMatrix"); 
-	ogl->glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
-	
-	int viewMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "viewMatrix"); 
-	ogl->glUniformMatrix4fv(viewMatrixLocation, 1, false, glm::value_ptr(viewMatrix));
-	
-	int projectionMatrixLocation = ogl->glGetUniformLocation(programShaderObject, "projectionMatrix"); 
-	ogl->glUniformMatrix4fv(projectionMatrixLocation, 1, false, glm::value_ptr(projectionMatrix));
-	
-	//update 3d texture
-	int texDimLocation = ogl->glGetUniformLocation(programShaderObject, "texDim"); 
-	ogl->glUniform3f(texDimLocation, (float)volumeTexture->Width(), (float)volumeTexture->Height(), (float)volumeTexture->Depth());
-	int volumeTextureLocation = ogl->glGetUniformLocation(programShaderObject, "volumeTexture"); 
-	ogl->glUniform1i(volumeTextureLocation, 0);
-	ogl->glActiveTexture(GL_TEXTURE0 + 0);
-	
-	if(volumeTexture != NULL)
-	{
-		ogl->glBindTexture(GL_TEXTURE_3D, volumeTexture->GetTextureId());
-	}
-	else
-	{
-		ogl->glBindTexture(GL_TEXTURE_3D, 0);
-	}
-	
-	//update material uniforms
-	int materialAlphaLocation = ogl->glGetUniformLocation(programShaderObject, "brightness"); 
-	ogl->glUniform1f(materialAlphaLocation, brightness);
-	int materialPointSizeLocation = ogl->glGetUniformLocation(programShaderObject, "contrast"); 
-	ogl->glUniform1f(materialPointSizeLocation, contrast);
-	
 	//bind VAO
 	ogl->glBindVertexArray(vertexArrayObject);
 	
 	//draw elements
-	ogl->glDrawElements(GL_TRIANGLES, volumeSlices * 6, GL_UNSIGNED_INT, 0);
+	ogl->glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, 0);
 	//ogl->glDrawArrays(GL_TRIANGLES, 0, volumeSlices * 6);
 	
 	//unbind VAO
@@ -260,22 +229,14 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 	//unbind shader program
 	ogl->glUseProgram(0);
 	
-	//reset opengl state
-	//enable writting to depth buffer
-	ogl->glDepthMask(GL_TRUE);
+	PrintGLErrors();
 }
 
 
-void TextureVolumeObject::Destroy()
+void AxisObject::Destroy()
 {
 	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
 	ogl->glDeleteBuffers(1, &vertexBuffer);
 	ogl->glDeleteBuffers(1, &elementBuffer);
 	ogl->glDeleteVertexArrays(1, &vertexArrayObject);
-}
-
-
-void TextureVolumeObject::SetVolumeTexture(Texture3D* vt)
-{
-	volumeTexture = vt; 
 }

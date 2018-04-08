@@ -14,9 +14,10 @@ class ControlPanel: public QDockWidget
 		
 		//Threshold
 		QLabel* labelThreshold;
-		
-		ScalarChooser*  chooserIntensity;
-		
+		QCheckBox* checkAxisVisible;
+		Vector3Chooser* chooserPosition;		
+		Vector3Chooser* chooserRotation;
+		Vector3Chooser* chooserScale;
 	
 		ControlPanel();
 };

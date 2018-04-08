@@ -29,6 +29,22 @@ MainWindow::MainWindow()
 		renderViewport.ImportTIFFFileSequence(fileNames);
 		std::cout << "Import Sequence" << std::endl;
 	});
+	
+	QObject::connect(controlPanel.checkAxisVisible, &QCheckBox::stateChanged, [this](int state)
+	{
+		if(state == Qt::Checked)
+		{
+			std::cout << "axis enabled" << std::endl; 
+			renderViewport.axisObject->SetVisible(true);
+			renderViewport.update();
+		}
+		else if(state == Qt::Unchecked)		
+		{
+			std::cout << "axis disabled" << std::endl; 
+			renderViewport.axisObject->SetVisible(false);
+			renderViewport.update();
+		}
+	});
 		
 	//central
 	setCentralWidget(&renderViewport);

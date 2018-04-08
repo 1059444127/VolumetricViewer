@@ -13,7 +13,7 @@ CameraControl::CameraControl(CameraObject* camObj)
 	posX = 0;
 	posY = 0;
 	posZ = 0;
-	moveSpeed = 0.01;
+	moveSpeed = 0.005;
 	firstMouseMove = true; 
 }
 

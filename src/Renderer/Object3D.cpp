@@ -6,6 +6,7 @@ Object3D::Object3D()
 	position = glm::vec3(0, 0, 0); 
 	rotation = glm::vec3(0, 0, 0);
 	scale = glm::vec3(1, 1, 1);
+	visible = true; 
 }
 
 glm::mat4 Object3D::GetModelMatrix()
@@ -48,4 +49,14 @@ glm::vec3 Object3D::GetScale()
 void Object3D::SetScale(glm::vec3 sca)
 {
 	scale = sca; 
+}
+
+bool Object3D::GetVisible()
+{
+	return visible; 
+}
+
+void Object3D::SetVisible(bool v)
+{
+	visible = v;
 }

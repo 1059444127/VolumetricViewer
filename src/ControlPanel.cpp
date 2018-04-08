@@ -16,8 +16,13 @@ ControlPanel::ControlPanel(): QDockWidget("Control Panel")
 	
 	layoutBase->setAlignment(Qt::AlignTop);
 		
-	//Threshold
-	chooserIntensity = new ScalarChooser("Intensity");
-	layoutBase->addWidget(chooserIntensity); 
+	checkAxisVisible = new QCheckBox("Axis Visible");
+	layoutBase->addWidget(checkAxisVisible);
 	
+	chooserPosition = new Vector3Chooser("position");		
+	chooserRotation = new Vector3Chooser("rotation");
+	chooserScale = new Vector3Chooser("scale");
+	layoutBase->addWidget(chooserPosition); 
+	layoutBase->addWidget(chooserRotation); 
+	layoutBase->addWidget(chooserScale); 
 }

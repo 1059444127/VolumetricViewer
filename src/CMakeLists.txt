@@ -14,6 +14,7 @@ set (volumetricRendererSrc
 		Renderer/TextureVolumeObject.cpp
 		Renderer/CameraObject.cpp
 		Renderer/CameraControl.cpp
+		Renderer/AxisObject.cpp
 		
 		IO/Image3DFromDicomFile.cpp
 		IO/Image3DFromTIFFFile.cpp

@@ -2,6 +2,28 @@
 
 #include "Common.hpp"
 
+class Vector3Chooser: public QWidget
+{
+	Q_OBJECT
+	private:
+		QHBoxLayout* layout;
+		QLabel* label;
+		QDoubleSpinBox* spinX;
+		QDoubleSpinBox* spinY;
+		QDoubleSpinBox* spinZ;
+		double sx, sy, sz;
+		
+	public:
+		Vector3Chooser(QString name, double defaultX=0, double defaultY=0, double defaultZ=0, 
+					   double minX=-10000, double minY=-10000, double minZ=-10000, 
+					   double maxX=10000, double maxY=10000, double maxZ=10000);
+		
+	signals:
+		void valueChanged(double xV, double yV, double zV);
+		
+	public slots:
+		void setValue(double xV, double yV, double zV);
+};
 
 class ScalarChooser: public QWidget
 {

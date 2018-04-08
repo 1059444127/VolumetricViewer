@@ -30,12 +30,12 @@ void RenderViewport::initializeGL()
 	
 	textureVolume = new Texture3D; 
 	
-	//textureVolume->Allocate(512, 512, 512);
-	void* data; 
-	//TestGenerateVolume(&data, 512, 512, 512);
-	//textureVolume->LoadData(data);
-	
 	textureVolumeObject->SetVolumeTexture(textureVolume); 
+	
+	axisObject = new AxisObject();
+	AxisObject::InitSystem(); 
+	axisObject->Init();
+	axisObject->SetVisible(false);
 }
 
 void RenderViewport::resizeGL(int w, int h)
@@ -50,6 +50,7 @@ void RenderViewport::paintGL()
     ogl->glClear(GL_COLOR_BUFFER_BIT);
 	ogl->glClear(GL_DEPTH_BUFFER_BIT);
 	
+	axisObject->Render(cameraObject->GetViewMatrix(), cameraObject->GetProjectionMatrix(windowWidth, windowHeight));
 	textureVolumeObject->Render(cameraObject->GetViewMatrix(), cameraObject->GetProjectionMatrix(windowWidth, windowHeight));
 	
 	PrintGLErrors();
@@ -83,6 +84,11 @@ void RenderViewport::keyPressEvent(QKeyEvent *event)
 void RenderViewport::keyReleaseEvent(QKeyEvent *event)
 {
 	cameraControl->keyReleaseEvent(event); 
+}
+
+void RenderViewport::EnableDisableAxis(bool en)
+{
+	axisObject->SetVisible(en);
 }
 
 void RenderViewport::ImportDicomFile(QString fileName)

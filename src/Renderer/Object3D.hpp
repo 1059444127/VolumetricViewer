@@ -6,7 +6,8 @@
 
 class Object3D
 {
-	private:
+	protected:
+		bool visible;
 		glm::vec3 position;
 		glm::vec3 rotation;
 		glm::vec3 scale;
@@ -23,4 +24,6 @@ class Object3D
 		void SetRotation(glm::vec3 rot);
 		glm::vec3 GetScale();
 		void SetScale(glm::vec3 sca);
+		bool GetVisible();
+		void SetVisible(bool v);
 };
