@@ -1,21 +1,22 @@
 #pragma once
 
-
 #include "Common.hpp"
 #include "HelperWidgets.hpp"
 
-class ControlPanel: public QDockWidget
+
+class ImageSettings: public QWidget
 {
 	Q_OBJECT
-	public:
-		QScrollArea* scrollAreaBase;
-		QWidget* widgetBase; 
-		QVBoxLayout* layoutBase;
+	private:
 		
+		
+	public:
 		QCheckBox* checkAxisVisible;
 		Vector3Chooser* chooserPosition;		
 		Vector3Chooser* chooserRotation;
 		Vector3Chooser* chooserScale;
 	
-		ControlPanel();
+	
+		ImageSettings();
+
 };

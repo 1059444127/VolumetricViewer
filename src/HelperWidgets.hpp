@@ -46,3 +46,4 @@ class ScalarChooser: public QWidget
 	public slots:
 		void setValue(double val);
 };
+

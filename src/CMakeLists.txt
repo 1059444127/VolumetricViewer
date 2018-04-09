@@ -8,6 +8,8 @@ set (volumetricRendererSrc
 		ControlPanel.cpp
 		RenderViewport.cpp
 		TestGenerateVolume.cpp
+		SampleMappingEditor.cpp
+		ImageSettings.cpp
 		
 		Renderer/Texture3D.cpp
 		Renderer/Object3D.cpp
