@@ -3,6 +3,7 @@
 
 #include "Common.hpp"
 #include "HelperWidgets.hpp"
+#include "ImageSettings.hpp"
 
 class ControlPanel: public QDockWidget
 {
@@ -13,9 +14,8 @@ class ControlPanel: public QDockWidget
 		QVBoxLayout* layoutBase;
 		
 		QCheckBox* checkAxisVisible;
-		Vector3Chooser* chooserPosition;		
-		Vector3Chooser* chooserRotation;
-		Vector3Chooser* chooserScale;
+		
+		std::vector<ImageSettings*> imageSettings;
 	
 		ControlPanel();
 };

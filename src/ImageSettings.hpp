@@ -11,11 +11,11 @@ class ImageSettings: public QWidget
 		
 		
 	public:
-		QCheckBox* checkAxisVisible;
+		QVBoxLayout* layoutBase;
 		Vector3Chooser* chooserPosition;		
 		Vector3Chooser* chooserRotation;
 		Vector3Chooser* chooserScale;
-	
+		QPushButton* deleteButton; 
 	
 		ImageSettings();
 
