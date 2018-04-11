@@ -100,8 +100,8 @@ void CameraControl::mouseMoveEvent(QMouseEvent *event)
 	{
 		float degtorad = 0.0174532925;
 		
-		float deltaX = -moveSpeed * (event->globalX() - mousePrevX);
-		float deltaY = moveSpeed * (event->globalY() - mousePrevY);
+		float deltaX = -moveSpeed * (event->globalX() - mousePrevX) * zoom;
+		float deltaY = moveSpeed * (event->globalY() - mousePrevY) * zoom;
 		
 		glm::mat4 rotxM = glm::rotate(glm::mat4(1), degtorad * rotx, glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 rotyM = glm::rotate(glm::mat4(1), degtorad * roty, glm::vec3(0.0f, 1.0f, 0.0f));
