@@ -15,7 +15,7 @@ class ControlPanel: public QDockWidget
 		
 		QCheckBox* checkAxisVisible;
 		
-		std::vector<ImageSettings*> imageSettings;
+		ImageSettings* imageSettings;
 	
 		ControlPanel();
 };

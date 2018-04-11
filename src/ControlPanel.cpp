@@ -19,4 +19,7 @@ ControlPanel::ControlPanel(): QDockWidget("Control Panel")
 	checkAxisVisible = new QCheckBox("Axis Visible");
 	layoutBase->addWidget(checkAxisVisible);
 	
+	imageSettings = new ImageSettings();
+	
+	layoutBase->addWidget(imageSettings);
 }

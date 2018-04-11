@@ -31,6 +31,33 @@ void SampleMappingNode::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 
 //
+//SampleMappingHistogram
+//
+
+
+SampleMappingHistogram::SampleMappingHistogram()
+{
+}
+
+QRectF SampleMappingHistogram::boundingRect() const
+{
+	qreal penWidth = 1;
+	return QRectF(-10 - penWidth / 2, -10 - penWidth / 2,
+				  20 + penWidth, 20 + penWidth);
+}
+
+int SampleMappingHistogram::type() const
+{
+	return Type;
+}
+
+void SampleMappingHistogram::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+	
+}
+
+
+//
 //SampleMappingEditor
 //
 

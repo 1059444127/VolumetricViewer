@@ -22,6 +22,7 @@ class MainWindow: public QMainWindow
 		MainWindow();
 		void ExpandToFitScreen();
 		
+		
 	public slots:
 		void Save();
 		void Load();

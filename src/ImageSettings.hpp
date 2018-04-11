@@ -2,6 +2,7 @@
 
 #include "Common.hpp"
 #include "HelperWidgets.hpp"
+#include "SampleMappingEditor.hpp"
 
 
 class ImageSettings: public QWidget
@@ -11,11 +12,13 @@ class ImageSettings: public QWidget
 		
 		
 	public:
+		QGroupBox* groupBox; 
+		QVBoxLayout* layoutGroup;
 		QVBoxLayout* layoutBase;
 		Vector3Chooser* chooserPosition;		
 		Vector3Chooser* chooserRotation;
 		Vector3Chooser* chooserScale;
-		QPushButton* deleteButton; 
+		SampleMappingEditor* sampleMapping;
 	
 		ImageSettings();
 

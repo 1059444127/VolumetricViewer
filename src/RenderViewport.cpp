@@ -24,8 +24,8 @@ void RenderViewport::initializeGL()
 	
 	connect(cameraControl, &CameraControl::CameraUpdated, [this](){update(); });
 	
-	textureVolumeObject = new TextureVolumeObject;
 	TextureVolumeObject::InitSystem(); 
+	textureVolumeObject = new TextureVolumeObject;
 	textureVolumeObject->Init();
 	
 	textureVolume = new Texture3D; 
