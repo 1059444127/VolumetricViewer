@@ -18,6 +18,7 @@ class ImageSettings: public QWidget
 		Vector3Chooser* chooserPosition;		
 		Vector3Chooser* chooserRotation;
 		Vector3Chooser* chooserScale;
+		QPushButton* buttonSampleMapping; 
 		SampleMappingEditor* sampleMapping;
 	
 		ImageSettings();

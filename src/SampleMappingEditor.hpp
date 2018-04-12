@@ -48,6 +48,9 @@ class SampleMappingAxis: public QGraphicsItem
 	public:
 		enum { Type = UserType + 1 };
 		
+		int viewW;
+		int viewH; 
+		
 		SampleMappingAxis();
 		QRectF boundingRect() const;
 		int type() const;
@@ -65,6 +68,9 @@ class SampleMappingEditor: public QGraphicsView
 		SampleMappingAxis* axis;
 		
 		QGraphicsScene* scene; 
+		
+	protected:
+		void resizeEvent(QResizeEvent *event);
 		
 	public:
 		SampleMappingEditor();

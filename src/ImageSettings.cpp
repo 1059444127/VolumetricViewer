@@ -20,6 +20,14 @@ ImageSettings::ImageSettings()
 	//layoutGroup->addWidget(chooserRotation); 
 	layoutGroup->addWidget(chooserScale);
 	
+	buttonSampleMapping = new QPushButton("Sample Mapping"); 
+	layoutGroup->addWidget(buttonSampleMapping);
+	
 	sampleMapping = new SampleMappingEditor;
-	layoutGroup->addWidget(sampleMapping);
+	
+	connect(buttonSampleMapping, &QPushButton::clicked, [this]()
+	{
+		sampleMapping->show();
+	});
+	
 }

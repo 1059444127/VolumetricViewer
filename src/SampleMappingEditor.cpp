@@ -108,7 +108,22 @@ int SampleMappingAxis::type() const
 
 void SampleMappingAxis::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	painter->drawLine(0, 0, 100, 0);
+	painter->drawLine(0, 0, 0, -100000);
+	painter->drawLine(0, 0, 100000, 0);
+	
+	for(int i = 0; i < 9; i++)
+	{
+		int x = i * viewW/8;
+		painter->drawLine(x, 0, x, 10);
+	}
+	
+	for(int i = 0; i < 9; i++)
+	{
+		int y = i * viewH/8;
+		painter->drawLine(0, -y, -10, -y);
+	}
+	
+	painter->drawLine(0, 0, viewW, -viewH);
 }
 
 
@@ -136,7 +151,24 @@ SampleMappingEditor::SampleMappingEditor()
 	
 	
 	int viewportW = viewport()->geometry().width();
-	int viewportH = viewport()->geometry().width();
-	setSceneRect(0, 0, viewportW, viewportH * 3/4);
+	int viewportH = viewport()->geometry().height();
+	int sceneWidth = viewportW;
+	int sceneHeight = viewportH;
+	setSceneRect(-20, -sceneHeight + 20, sceneWidth, sceneHeight);
+	setTransformationAnchor(QGraphicsView::NoAnchor); 
 	
+	axis->viewW = sceneWidth - 30;
+	axis->viewH = sceneHeight - 30;
+}
+
+void SampleMappingEditor::resizeEvent(QResizeEvent *event)
+{
+	int viewportW = viewport()->geometry().width();
+	int viewportH = viewport()->geometry().height();
+	int sceneWidth = viewportW;
+	int sceneHeight = viewportH;
+	setSceneRect(-20, -sceneHeight + 20, sceneWidth, sceneHeight);
+	
+	axis->viewW = sceneWidth - 30;
+	axis->viewH = sceneHeight - 30;
 }
