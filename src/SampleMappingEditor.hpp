@@ -36,13 +36,17 @@ class SampleMappingHistogram: public QGraphicsItem
 {
 	public:
 		enum { Type = UserType + 1 };
-	
 		
+		int viewW;
+		int viewH;
+		
+		std::vector<char> data; 
 	
 		SampleMappingHistogram();
 		QRectF boundingRect() const;
 		int type() const;
 		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+		void SetData(char* d, int len);
 };
 
 
@@ -98,6 +102,7 @@ class SampleMappingEditor: public QGraphicsView
 {
 	Q_OBJECT
 	private:
+		SampleMappingNode* selectedNode; 
 		std::vector<SampleMappingNode*> nodes; 
 		SampleMappingHistogram* histogram;
 		SampleMappingCurve* curve;

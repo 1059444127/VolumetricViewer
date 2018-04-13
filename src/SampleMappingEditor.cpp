@@ -11,7 +11,7 @@ SampleMappingNode::SampleMappingNode(double x, double y)
 	setZValue(3);
 	xPos = x;
 	yPos = y; 
-	color = QColor(255, 255, 0);
+	color = QColor(128, 128, 128);
 }
 
 QRectF SampleMappingNode::boundingRect() const
@@ -26,19 +26,13 @@ int SampleMappingNode::type() const
 
 void SampleMappingNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	QColor colorBorder = QColor(255, 255, 255);
-	painter->setPen(QPen(colorBorder));
-	
 	int sceneX = xPos * viewW;
 	int sceneY = yPos * viewH;
-	painter->drawEllipse(sceneX - 5, -sceneY - 5, 10, 10);
 	
+	QColor colorBorder = QColor(255, 255, 255);
+	painter->setPen(QPen(colorBorder));
 	painter->setBrush(QBrush(color, Qt::SolidPattern));
-	
-	sceneX = xPos * viewW;
-	sceneY = yPos * viewH;
 	painter->drawEllipse(sceneX - 5, -sceneY - 5, 10, 10);
-	
 }
 
 
@@ -49,6 +43,7 @@ void SampleMappingNode::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 SampleMappingHistogram::SampleMappingHistogram()
 {
+	setZValue(1);
 }
 
 QRectF SampleMappingHistogram::boundingRect() const
@@ -63,6 +58,25 @@ int SampleMappingHistogram::type() const
 
 void SampleMappingHistogram::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	painter->setBrush(QBrush(QColor(100, 100, 100, 100), Qt::SolidPattern));
+	painter->setPen(QPen(QColor(100, 100, 100, 100), Qt::SolidPattern));
+	for(int i = 0; i < data.size(); i++)
+	{
+		int x = (double)i / ((double)data.size() - 1.0)  *  viewW;
+		int y = (double)data[i] / 255.0  *  viewH;
+		int W = (double)(i+1) / ((double)data.size() - 1.0)  *  viewW - x;
+		painter->drawRect(x, 0, (std::max)(W, 1), -y);
+	}
+}
+
+void SampleMappingHistogram::SetData(char* d, int len)
+{
+	data.resize(len);
+	for(int i = 0; i < len; i++)
+	{
+		data[i] = d[i]; 
+	}
+	
 	
 }
 
@@ -74,7 +88,7 @@ void SampleMappingHistogram::paint(QPainter *painter, const QStyleOptionGraphics
 
 SampleMappingCurve::SampleMappingCurve()
 {
-	
+	setZValue(2);
 }
 
 QRectF SampleMappingCurve::boundingRect() const
@@ -191,6 +205,8 @@ void SampleMappingAxis::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 SampleMappingEditor::SampleMappingEditor()
 {
+	selectedNode = NULL;
+	
 	scene = new QGraphicsScene(this);
 	
 	setScene(scene);
@@ -199,6 +215,9 @@ SampleMappingEditor::SampleMappingEditor()
 	
 	histogram = new SampleMappingHistogram;
 	scene->addItem(histogram);
+	char d[256];
+	for(int i = 0; i < 256; i++) d[i] = i;
+	histogram->SetData(d, 256);///Test Data
 	
 	curve = new SampleMappingCurve;
 	curve->nodes = &nodes; 
@@ -215,6 +234,10 @@ SampleMappingEditor::SampleMappingEditor()
 	
 	axis->viewW = GetViewW();
 	axis->viewH = GetViewH();
+	curve->viewW = GetViewW();
+	curve->viewH = GetViewH();
+	histogram->viewW = GetViewW();
+	histogram->viewH = GetViewH();
 }
 
 void SampleMappingEditor::resizeEvent(QResizeEvent *event)
@@ -228,6 +251,9 @@ void SampleMappingEditor::resizeEvent(QResizeEvent *event)
 	
 	curve->viewW = GetViewW();
 	curve->viewH = GetViewH();
+	
+	histogram->viewW = GetViewW();
+	histogram->viewH = GetViewH();
 	
 	for(int i = 0; i < nodes.size(); i++)
 	{
