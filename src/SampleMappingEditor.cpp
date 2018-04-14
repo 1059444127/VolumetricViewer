@@ -8,6 +8,7 @@
 
 SampleMappingNode::SampleMappingNode(double x, double y)
 {
+	selected = false;
 	setZValue(3);
 	xPos = x;
 	yPos = y; 
@@ -30,9 +31,11 @@ void SampleMappingNode::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 	int sceneY = yPos * viewH;
 	
 	QColor colorBorder = QColor(255, 255, 255);
+	if(selected) colorBorder = QColor(255, 122, 122);
+	
 	painter->setPen(QPen(colorBorder));
 	painter->setBrush(QBrush(color, Qt::SolidPattern));
-	painter->drawEllipse(sceneX - 5, -sceneY - 5, 10, 10);
+	painter->drawEllipse(-5, -5, 10, 10);
 }
 
 
@@ -69,7 +72,7 @@ void SampleMappingHistogram::paint(QPainter *painter, const QStyleOptionGraphics
 	}
 }
 
-void SampleMappingHistogram::SetData(char* d, int len)
+void SampleMappingHistogram::SetData(unsigned char* d, int len)
 {
 	data.resize(len);
 	for(int i = 0; i < len; i++)
@@ -103,6 +106,7 @@ int SampleMappingCurve::type() const
 
 void SampleMappingCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	
 	QPainterPath path;
 	
 	if(nodes->size() > 0 )
@@ -120,6 +124,9 @@ void SampleMappingCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem
 		   return lhs.x() < rhs.x();
 		});
 		
+		//add to start and end to unbound
+		points.insert(points.begin(), QPointF(0, points[0].y()));
+		points.push_back(QPointF(viewW, points[points.size() - 1].y()));
 		
 		for(int i = 0; i < points.size(); i++)
 		{
@@ -132,9 +139,23 @@ void SampleMappingCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem
 				path.cubicTo(QPointF(x, y), QPointF(x, y), QPointF(x, y));
 		}
 	}
+	else
+	{
+		//path.moveTo(QPointF(0, 0));
+		//double x = viewW;
+		//double y = 0;
+		//path.cubicTo(QPointF(x, y), QPointF(x, y), QPointF(x, y));
+	}
+
+	QPen pen; 
+	pen.setStyle(Qt::SolidLine);
+	pen.setWidth(2);
+	pen.setColor(Qt::white);
+	pen.setCapStyle(Qt::RoundCap);
+	pen.setJoinStyle(Qt::RoundJoin);
 	
-	QColor colorBorder = QColor(255, 255, 255);
-	painter->setPen(QPen(colorBorder));
+	painter->setPen(pen);
+	
 	painter->strokePath(path, painter->pen());
 }
 
@@ -215,9 +236,10 @@ SampleMappingEditor::SampleMappingEditor()
 	
 	histogram = new SampleMappingHistogram;
 	scene->addItem(histogram);
-	char d[256];
-	for(int i = 0; i < 256; i++) d[i] = i;
-	histogram->SetData(d, 256);///Test Data
+	
+	//unsigned char d[256];
+	//for(int i = 0; i < 256; i++) d[i] = i;
+	//histogram->SetData(d, 256);///Test Data
 	
 	curve = new SampleMappingCurve;
 	curve->nodes = &nodes; 
@@ -238,6 +260,9 @@ SampleMappingEditor::SampleMappingEditor()
 	curve->viewH = GetViewH();
 	histogram->viewW = GetViewW();
 	histogram->viewH = GetViewH();
+	
+	
+	Reset();
 }
 
 void SampleMappingEditor::resizeEvent(QResizeEvent *event)
@@ -259,6 +284,8 @@ void SampleMappingEditor::resizeEvent(QResizeEvent *event)
 	{
 		nodes[i]->viewW = GetViewW();
 		nodes[i]->viewH = GetViewH();
+		QPointF pointInScene = QPointF(nodes[i]->viewW * nodes[i]->xPos, -nodes[i]->viewH * nodes[i]->yPos);
+		nodes[i]->setPos(pointInScene);
 	}
 	
 }
@@ -268,9 +295,14 @@ void SampleMappingEditor::mouseDoubleClickEvent(QMouseEvent * event)
 	int mouseX = event->x();
 	int mouseY = event->y();
 	QPointF pointInScene = mapToScene(QPoint(mouseX, mouseY));
+	pointInScene.setX((std::max)(0.0f, (float)pointInScene.x())); 
+	pointInScene.setY((std::min)(0.0f, (float)pointInScene.y())); 
+	pointInScene.setX((std::min)((float)GetViewW(), (float)pointInScene.x())); 
+	pointInScene.setY((std::max)(-(float)GetViewH(), (float)pointInScene.y())); 
 	double x = pointInScene.x() / GetViewW();
 	double y = -pointInScene.y() / GetViewH();
 	SampleMappingNode* newNode = new SampleMappingNode(x, y);
+	newNode->setPos(pointInScene);
 	newNode->viewW = GetViewW();
 	newNode->viewH = GetViewH();
 	nodes.push_back(newNode);
@@ -284,12 +316,109 @@ void SampleMappingEditor::mouseDoubleClickEvent(QMouseEvent * event)
 
 void SampleMappingEditor::mousePressEvent(QMouseEvent * event)
 {
+	QGraphicsView::mousePressEvent(event);
 	
+	if(event->button() == Qt::LeftButton)
+	{
+		QGraphicsItem* item = itemAt(event->pos());
+		
+		for(int i = 0; i < nodes.size(); i++)
+			nodes[i]->selected = false;
+		
+		selectedNode = NULL;
+		
+		if(item)
+		{
+			SampleMappingNode* n = qgraphicsitem_cast<SampleMappingNode*>(item);			
+			if(n != 0)
+			{
+				std::cout << "Node Selected" << std::endl;
+				n->selected = true;
+				selectedNode = n;
+			}
+		}
+		
+		update();
+		scene->update(); 
+	}
+	
+	if(event->button() == Qt::RightButton)
+	{
+		QGraphicsItem* item = itemAt(event->pos());
+		
+		for(int i = 0; i < nodes.size(); i++)
+			nodes[i]->selected = false;
+		
+		selectedNode = NULL;
+		
+		if(item)
+		{
+			SampleMappingNode* n = qgraphicsitem_cast<SampleMappingNode*>(item);			
+			if(n != 0)
+			{
+				std::cout << "Node Selected" << std::endl;
+				n->selected = true;
+				selectedNode = n;
+				
+				QColor col = QColorDialog::getColor(QColor(255, 255, 255), this, "Choose Color Stop");
+				if(col.isValid())
+				{
+					selectedNode->color = col;
+				}
+			}
+		}
+		
+		update();
+		scene->update(); 
+	}
 }
 
 void SampleMappingEditor::mouseMoveEvent(QMouseEvent * event)
 {
-	
+
+	if(selectedNode != NULL)
+	{
+		int mouseX = event->x();
+		int mouseY = event->y();
+		QPointF pointInScene = mapToScene(QPoint(mouseX, mouseY));
+		
+		pointInScene.setX((std::max)(0.0f, (float)pointInScene.x())); 
+		pointInScene.setY((std::min)(0.0f, (float)pointInScene.y())); 
+		pointInScene.setX((std::min)((float)GetViewW(), (float)pointInScene.x())); 
+		pointInScene.setY((std::max)(-(float)GetViewH(), (float)pointInScene.y())); 
+		
+		double x = pointInScene.x() / GetViewW();
+		double y = -pointInScene.y() / GetViewH();
+		selectedNode->setPos(pointInScene);
+		selectedNode->xPos = x;
+		selectedNode->yPos = y; 
+		
+		update();
+		scene->update(); 
+	}	
+}
+
+void SampleMappingEditor::keyPressEvent(QKeyEvent* event)
+{
+	if(event->key() == Qt::Key_Delete)
+	{
+		if(selectedNode != NULL)
+		{
+			for(int i = 0; i < nodes.size(); i++)
+			{
+				if(nodes[i] == selectedNode)
+				{
+					delete selectedNode; 
+					selectedNode = NULL; 
+					nodes.erase(nodes.begin() + i);
+					break; 
+				}
+			}
+			
+			update();
+			scene->update(); 
+		}
+	}
 }
 
 int SampleMappingEditor::GetViewW()
@@ -302,4 +431,32 @@ int SampleMappingEditor::GetViewH()
 {
 	int viewportH = viewport()->geometry().height();
 	return viewportH - 70;
+}
+
+void SampleMappingEditor::Reset()
+{
+	selectedNode = NULL; 
+	
+	for(int i = nodes.size()-1; i >= 0; i--)
+	{
+		nodes.erase(nodes.begin() + i);
+	}
+	
+	SampleMappingNode* newNode = new SampleMappingNode(0, 0);
+	newNode->setPos(0, 0);
+	newNode->viewW = GetViewW();
+	newNode->viewH = GetViewH();
+	nodes.push_back(newNode);
+	scene->addItem(newNode);
+	
+	SampleMappingNode* newNode2 = new SampleMappingNode(1, 1);
+	newNode2->setPos(GetViewW(), GetViewH());
+	newNode2->viewW = GetViewW();
+	newNode2->viewH = GetViewH();
+	nodes.push_back(newNode2);
+	scene->addItem(newNode2);
+	
+	scene->update(); 
+	update(); 
+	
 }

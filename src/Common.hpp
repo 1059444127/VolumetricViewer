@@ -45,6 +45,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QColorDialog>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QOpenGLWidget>

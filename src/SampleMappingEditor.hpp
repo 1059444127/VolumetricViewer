@@ -20,6 +20,8 @@ class SampleMappingNode: public QGraphicsItem
 		
 		QColor color; 
 		
+		bool selected; 
+		
 		SampleMappingNode(double x, double y);
 		QRectF boundingRect() const;
 		int type() const;
@@ -35,18 +37,18 @@ class SampleMappingNode: public QGraphicsItem
 class SampleMappingHistogram: public QGraphicsItem 
 {
 	public:
-		enum { Type = UserType + 1 };
+		enum { Type = UserType + 2 };
 		
 		int viewW;
 		int viewH;
 		
-		std::vector<char> data; 
+		std::vector<unsigned char> data; 
 	
 		SampleMappingHistogram();
 		QRectF boundingRect() const;
 		int type() const;
 		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-		void SetData(char* d, int len);
+		void SetData(unsigned char* d, int len);
 };
 
 
@@ -64,7 +66,7 @@ class SampleMappingCurve: public QGraphicsItem
 		
 		std::vector<SampleMappingNode*>* nodes; 
 		
-		enum { Type = UserType + 1 };
+		enum { Type = UserType + 3 };
 		
 		SampleMappingCurve();
 		QRectF boundingRect() const;
@@ -81,7 +83,7 @@ class SampleMappingCurve: public QGraphicsItem
 class SampleMappingAxis: public QGraphicsItem 
 {
 	public:
-		enum { Type = UserType + 1 };
+		enum { Type = UserType + 4 };
 		
 		int viewW;
 		int viewH; 
@@ -115,11 +117,13 @@ class SampleMappingEditor: public QGraphicsView
 		void mouseDoubleClickEvent(QMouseEvent * event);
 		void mousePressEvent(QMouseEvent * event);
 		void mouseMoveEvent(QMouseEvent * event);
+		void keyPressEvent(QKeyEvent * event);
 		
 	public:
 		SampleMappingEditor();
 		int GetViewW();
 		int GetViewH();
+		void Reset();
 		
 
 };
