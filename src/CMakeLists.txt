@@ -12,6 +12,7 @@ set (volumetricRendererSrc
 		ImageSettings.cpp
 		
 		Renderer/Texture3D.cpp
+		Renderer/Texture1D.cpp
 		Renderer/Object3D.cpp
 		Renderer/TextureVolumeObject.cpp
 		Renderer/CameraObject.cpp

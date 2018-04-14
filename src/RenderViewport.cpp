@@ -11,6 +11,12 @@
 
 RenderViewport::RenderViewport()
 {
+	QSurfaceFormat glFormat;
+	glFormat.setMajorVersion(3);
+	glFormat.setMinorVersion(3);
+	glFormat.setProfile( QSurfaceFormat::CompatibilityProfile ); 
+	
+	setFormat(glFormat); 
 	setFocusPolicy(Qt::ClickFocus);
 }
 
@@ -29,6 +35,8 @@ void RenderViewport::initializeGL()
 	textureVolumeObject->Init();
 	
 	textureVolume = new Texture3D; 
+	
+	textureLUT = new Texture1D;
 	
 	textureVolumeObject->SetVolumeTexture(textureVolume); 
 	

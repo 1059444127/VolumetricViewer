@@ -104,6 +104,7 @@ class SampleMappingEditor: public QGraphicsView
 {
 	Q_OBJECT
 	private:
+		QColor prevNodeColor; 
 		SampleMappingNode* selectedNode; 
 		std::vector<SampleMappingNode*> nodes; 
 		SampleMappingHistogram* histogram;
@@ -124,6 +125,8 @@ class SampleMappingEditor: public QGraphicsView
 		int GetViewW();
 		int GetViewH();
 		void Reset();
+		void GetLUT(int bufferSize, float* textureBuffer);
 		
-
+	signals:
+		void CurveChanged();
 };

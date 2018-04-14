@@ -28,8 +28,10 @@ void main()
  
 std::string TextureVolumeObject::fragSrc = R"(
 #version 330
+
 //inputs
 in vec4 fragmentPosition;
+
 //uniforms
 uniform mat4 modelViewProjectionMatrix;
 uniform mat4 modelMatrix;
@@ -40,6 +42,10 @@ uniform sampler3D volumeTexture;
 uniform vec3 texDim;
 uniform float brightness;
 uniform float contrast;
+
+//output
+layout(location = 0) out vec4 outputColor; 
+
 //main
 void main()
 {
@@ -49,10 +55,10 @@ void main()
 	vec3 fp = fragmentPosition.xyz;
 	
 	vec4 fragPos = invMVMatrix * vec4(fp, 0.0f);
-	vec4 col = texture3D(volumeTexture, (fragPos.xyz * vec3(1, 1, 1/dasp) + vec3(0.5f, 0.5f, 0.5f)));
+	vec4 col = texture(volumeTexture, (fragPos.xyz * vec3(1, 1, 1/dasp) + vec3(0.5f, 0.5f, 0.5f)));
 	if(col.w <= 0.0001f)
 		discard; 
-  	gl_FragColor = vec4(col.r, col.r, col.r, col.r);
+  	outputColor = vec4(col.r, col.r, col.r, col.r);
 }
 )";
  
@@ -92,7 +98,7 @@ void TextureVolumeObject::InitSystem()
 		char log[5000];
 		int logLen; 
 		ogl->glGetProgramInfoLog(programShaderObject, 5000, &logLen, log);
-		std::cerr << "PointCloud:Could not link program: " << std::endl;
+		std::cerr << "TextureVolumeObject:Could not link program: " << std::endl;
 		std::cerr << log << std::endl;
 		ogl->glGetShaderInfoLog(vertexShaderObject, 5000, &logLen, log);
 		std::cerr << "vertex shader log:\n" << log << std::endl;
@@ -182,6 +188,8 @@ void TextureVolumeObject::Init()
 	ogl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	
 	volumeTexture = NULL; 
+	
+	lutTexture = NULL; 
 }
 
 

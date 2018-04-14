@@ -32,10 +32,13 @@ in vec4 fragColor;
 
 //uniforms
 
+//output
+layout(location = 0) out vec4 outputColor;
+
 //main
 void main()
 {
-  	gl_FragColor = fragColor;
+  	outputColor = fragColor;
 }
 )";
  
@@ -75,7 +78,7 @@ void AxisObject::InitSystem()
 		char log[5000];
 		int logLen; 
 		ogl->glGetProgramInfoLog(programShaderObject, 5000, &logLen, log);
-		std::cerr << "PointCloud:Could not link program: " << std::endl;
+		std::cerr << "AxisObject:Could not link program: " << std::endl;
 		std::cerr << log << std::endl;
 		ogl->glGetShaderInfoLog(vertexShaderObject, 5000, &logLen, log);
 		std::cerr << "vertex shader log:\n" << log << std::endl;

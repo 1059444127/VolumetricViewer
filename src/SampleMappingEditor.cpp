@@ -106,6 +106,7 @@ int SampleMappingCurve::type() const
 
 void SampleMappingCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+	painter->setRenderHint(QPainter::Antialiasing);
 	
 	QPainterPath path;
 	
@@ -226,6 +227,8 @@ void SampleMappingAxis::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 SampleMappingEditor::SampleMappingEditor()
 {
+	prevNodeColor = QColor(255, 255, 255);
+	 
 	selectedNode = NULL;
 	
 	scene = new QGraphicsScene(this);
@@ -292,26 +295,29 @@ void SampleMappingEditor::resizeEvent(QResizeEvent *event)
 
 void SampleMappingEditor::mouseDoubleClickEvent(QMouseEvent * event)
 {
-	int mouseX = event->x();
-	int mouseY = event->y();
-	QPointF pointInScene = mapToScene(QPoint(mouseX, mouseY));
-	pointInScene.setX((std::max)(0.0f, (float)pointInScene.x())); 
-	pointInScene.setY((std::min)(0.0f, (float)pointInScene.y())); 
-	pointInScene.setX((std::min)((float)GetViewW(), (float)pointInScene.x())); 
-	pointInScene.setY((std::max)(-(float)GetViewH(), (float)pointInScene.y())); 
-	double x = pointInScene.x() / GetViewW();
-	double y = -pointInScene.y() / GetViewH();
-	SampleMappingNode* newNode = new SampleMappingNode(x, y);
-	newNode->setPos(pointInScene);
-	newNode->viewW = GetViewW();
-	newNode->viewH = GetViewH();
-	nodes.push_back(newNode);
-	scene->addItem(newNode);
-	
-	scene->update(); 
-	update(); 
-	
-	std::cout << "Added New Node at " << x << ", " << y << std::endl; 
+	if(event->button() == Qt::LeftButton)
+	{
+		int mouseX = event->x();
+		int mouseY = event->y();
+		QPointF pointInScene = mapToScene(QPoint(mouseX, mouseY));
+		pointInScene.setX((std::max)(0.0f, (float)pointInScene.x())); 
+		pointInScene.setY((std::min)(0.0f, (float)pointInScene.y())); 
+		pointInScene.setX((std::min)((float)GetViewW(), (float)pointInScene.x())); 
+		pointInScene.setY((std::max)(-(float)GetViewH(), (float)pointInScene.y())); 
+		double x = pointInScene.x() / GetViewW();
+		double y = -pointInScene.y() / GetViewH();
+		SampleMappingNode* newNode = new SampleMappingNode(x, y);
+		newNode->setPos(pointInScene);
+		newNode->viewW = GetViewW();
+		newNode->viewH = GetViewH();
+		nodes.push_back(newNode);
+		scene->addItem(newNode);
+		
+		scene->update(); 
+		update(); 
+		
+		std::cout << "Added New Node at " << x << ", " << y << std::endl; 
+	}
 }
 
 void SampleMappingEditor::mousePressEvent(QMouseEvent * event)
@@ -360,10 +366,11 @@ void SampleMappingEditor::mousePressEvent(QMouseEvent * event)
 				n->selected = true;
 				selectedNode = n;
 				
-				QColor col = QColorDialog::getColor(QColor(255, 255, 255), this, "Choose Color Stop");
+				QColor col = QColorDialog::getColor(prevNodeColor, this, "Choose Color Stop");
 				if(col.isValid())
 				{
 					selectedNode->color = col;
+					prevNodeColor = col; 
 				}
 			}
 		}
@@ -458,5 +465,96 @@ void SampleMappingEditor::Reset()
 	
 	scene->update(); 
 	update(); 
+	
+}
+
+QColor LerpColor(QColor& a, QColor& b, double frac)
+{
+	return QColor(
+		(b.redF() - a.redF()) * frac + a.redF(),
+		(b.greenF() - a.greenF()) * frac + a.greenF(),
+		(b.blueF() - a.blueF()) * frac + a.blueF()
+	);
+}
+
+struct MappingPoint
+{
+	double x;
+	double y;
+	QColor color;
+};
+
+void SampleMappingEditor::GetLUT(int textureWidth, float* textureBuffer)
+{
+	int viewW = GetViewW();
+	int viewH = GetViewH();
+	
+	if(nodes.size() > 0)
+	{
+		std::vector<MappingPoint> points; 
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			double x = nodes[i]->xPos;
+			double y = nodes[i]->yPos;
+			MappingPoint point; 
+			point.x = x;
+			point.y = y;
+			point.color = nodes[i]->color; 
+			points.push_back(point);
+		}
+		
+		sort( points.begin( ), points.end( ), [ ]( const MappingPoint& lhs, const MappingPoint& rhs )
+		{
+		   return lhs.x < rhs.x;
+		});
+		
+		//add to start and end to unbound
+		MappingPoint startPoint;
+		startPoint.x = 0;
+		startPoint.y = points[0].y;
+		startPoint.color = points[0].color;
+		points.insert(points.begin(), startPoint);
+		
+		MappingPoint endPoint; 
+		endPoint.x = 1.0; 
+		endPoint.y = points[points.size() - 1].y;
+		endPoint.color = points[points.size() - 1].color;
+		points.push_back(endPoint);
+		
+		for(int i = 1; i < points.size(); i++)
+		{
+			double x0 = points[i].x;
+			double y0 = points[i].y;
+			double x1 = points[i].x;
+			double y1 = points[i].y;
+			QColor col0 = points[i].color;
+			QColor col1 = points[i].color;
+			
+			int offset = x0 * textureWidth;
+			int len = (x1-x0) * textureWidth;
+			
+			for(int j = offset; j < offset + len; j++)
+			{
+				double frac = (double)(j - offset) / ((double)len); 
+				QColor col = LerpColor(col0, col1, frac);
+				textureBuffer[j * 4 + 0] = col.red();
+				textureBuffer[j * 4 + 1] = col.green();
+				textureBuffer[j * 4 + 2] = col.blue();
+				textureBuffer[j * 4 + 3] = (frac * (y1 - y0) + y0) * 255; 
+				
+			}
+		}
+	}
+	else
+	{
+		for(int i = 0; i < textureWidth; i++)
+		{
+			textureBuffer[i*4 + 0] = 0;
+			textureBuffer[i*4 + 1] = 0;
+			textureBuffer[i*4 + 2] = 0;
+			textureBuffer[i*4 + 3] = 0;
+		}
+	}
+	
 	
 }

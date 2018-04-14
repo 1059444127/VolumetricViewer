@@ -3,6 +3,7 @@
 
 #include "Object3D.hpp"
 #include "Texture3D.hpp"
+#include "Texture1D.hpp"
 
 
 class TextureVolumeObject: public Object3D
@@ -28,6 +29,9 @@ class TextureVolumeObject: public Object3D
 		static int programShaderObject;
 		static int vertexShaderObject;
 		static int fragmentShaderObject;
+		
+		
+		Texture1D* lutTexture; 
 		
 		Texture3D* volumeTexture; 
 		

@@ -6,6 +6,7 @@
 #include "Renderer/CameraObject.hpp"
 #include "Renderer/TextureVolumeObject.hpp"
 #include "Renderer/Texture3D.hpp"
+#include "Renderer/Texture1D.hpp"
 #include "Renderer/CameraControl.hpp"
 #include "Renderer/AxisObject.hpp"
 
@@ -33,6 +34,7 @@ class RenderViewport: public QOpenGLWidget
 		CameraControl* cameraControl; 
 		TextureVolumeObject* textureVolumeObject; 
 		Texture3D* textureVolume; 
+		Texture1D* textureLUT; 
 		AxisObject* axisObject;
 		
 		RenderViewport();
