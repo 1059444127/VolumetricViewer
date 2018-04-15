@@ -315,6 +315,7 @@ void SampleMappingEditor::mouseDoubleClickEvent(QMouseEvent * event)
 		
 		scene->update(); 
 		update(); 
+		emit CurveChanged();
 		
 		std::cout << "Added New Node at " << x << ", " << y << std::endl; 
 	}
@@ -346,6 +347,7 @@ void SampleMappingEditor::mousePressEvent(QMouseEvent * event)
 		
 		update();
 		scene->update(); 
+		emit CurveChanged();
 	}
 	
 	if(event->button() == Qt::RightButton)
@@ -377,6 +379,7 @@ void SampleMappingEditor::mousePressEvent(QMouseEvent * event)
 		
 		update();
 		scene->update(); 
+		emit CurveChanged();
 	}
 }
 
@@ -402,6 +405,7 @@ void SampleMappingEditor::mouseMoveEvent(QMouseEvent * event)
 		
 		update();
 		scene->update(); 
+		emit CurveChanged();
 	}	
 }
 
@@ -424,6 +428,7 @@ void SampleMappingEditor::keyPressEvent(QKeyEvent* event)
 			
 			update();
 			scene->update(); 
+			emit CurveChanged();
 		}
 	}
 }
@@ -453,6 +458,7 @@ void SampleMappingEditor::Reset()
 	newNode->setPos(0, 0);
 	newNode->viewW = GetViewW();
 	newNode->viewH = GetViewH();
+	newNode->color = QColor(0, 0, 0);
 	nodes.push_back(newNode);
 	scene->addItem(newNode);
 	
@@ -460,20 +466,22 @@ void SampleMappingEditor::Reset()
 	newNode2->setPos(GetViewW(), GetViewH());
 	newNode2->viewW = GetViewW();
 	newNode2->viewH = GetViewH();
+	newNode2->color = QColor(255, 255, 255);
 	nodes.push_back(newNode2);
 	scene->addItem(newNode2);
 	
 	scene->update(); 
 	update(); 
+	emit CurveChanged();
 	
 }
 
 QColor LerpColor(QColor& a, QColor& b, double frac)
 {
 	return QColor(
-		(b.redF() - a.redF()) * frac + a.redF(),
-		(b.greenF() - a.greenF()) * frac + a.greenF(),
-		(b.blueF() - a.blueF()) * frac + a.blueF()
+		255 * ((b.redF() - a.redF()) * frac + a.redF()),
+		255 * ((b.greenF() - a.greenF()) * frac + a.greenF()),
+		255 * ((b.blueF() - a.blueF()) * frac + a.blueF())
 	);
 }
 
@@ -523,25 +531,26 @@ void SampleMappingEditor::GetLUT(int textureWidth, float* textureBuffer)
 		
 		for(int i = 1; i < points.size(); i++)
 		{
-			double x0 = points[i].x;
-			double y0 = points[i].y;
+			double x0 = points[i-1].x;
+			double y0 = points[i-1].y;
 			double x1 = points[i].x;
 			double y1 = points[i].y;
-			QColor col0 = points[i].color;
+			QColor col0 = points[i-1].color;
 			QColor col1 = points[i].color;
 			
 			int offset = x0 * textureWidth;
 			int len = (x1-x0) * textureWidth;
 			
+			//std::cout << "adding data in range " << offset << " " << len << std::endl;
+			
 			for(int j = offset; j < offset + len; j++)
 			{
 				double frac = (double)(j - offset) / ((double)len); 
 				QColor col = LerpColor(col0, col1, frac);
-				textureBuffer[j * 4 + 0] = col.red();
-				textureBuffer[j * 4 + 1] = col.green();
-				textureBuffer[j * 4 + 2] = col.blue();
-				textureBuffer[j * 4 + 3] = (frac * (y1 - y0) + y0) * 255; 
-				
+				textureBuffer[j * 4 + 0] = (double)col.red() / 255.0;
+				textureBuffer[j * 4 + 1] = (double)col.green() / 255.0;
+				textureBuffer[j * 4 + 2] = (double)col.blue() / 255.0;
+				textureBuffer[j * 4 + 3] = (frac * (y1 - y0) + y0); 
 			}
 		}
 	}
@@ -549,10 +558,11 @@ void SampleMappingEditor::GetLUT(int textureWidth, float* textureBuffer)
 	{
 		for(int i = 0; i < textureWidth; i++)
 		{
-			textureBuffer[i*4 + 0] = 0;
-			textureBuffer[i*4 + 1] = 0;
-			textureBuffer[i*4 + 2] = 0;
-			textureBuffer[i*4 + 3] = 0;
+			double frac = (double)(i) / ((double)textureWidth); 
+			textureBuffer[i*4 + 0] = frac;
+			textureBuffer[i*4 + 1] = frac;
+			textureBuffer[i*4 + 2] = frac;
+			textureBuffer[i*4 + 3] = frac;
 		}
 	}
 	

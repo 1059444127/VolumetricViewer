@@ -53,4 +53,5 @@ class TextureVolumeObject: public Object3D
 		virtual void Destroy();
 		
 		void SetVolumeTexture(Texture3D* vt);
+		void SetLUTTexture(Texture1D* lt);
 };

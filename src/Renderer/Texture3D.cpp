@@ -18,6 +18,10 @@ Texture3D::Texture3D()
 	ogl->glTexParameterfv(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, bcolor);
 	
 	ogl->glBindTexture(GL_TEXTURE_3D, 0);
+	
+	width = 0;
+	height = 0;
+	depth = 0; 
 }
 
 void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d, bool compressed)

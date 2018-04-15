@@ -44,4 +44,5 @@ class RenderViewport: public QOpenGLWidget
 		void ImportDicomFile(QString fileName);
 		void ImportDicomFileSequence(QStringList fileNames);
 		void ImportTIFFFileSequence(QStringList fileNames);
+		void LoadLUT(float* buffer, int sizeLUT);
 };

@@ -38,7 +38,20 @@ void RenderViewport::initializeGL()
 	
 	textureLUT = new Texture1D;
 	
+	//Load Default LUT texture
+	int sizeLUT = 256; 
+	std::vector<float> bufferLUT(sizeLUT * 4);
+	for(int i = 0; i < sizeLUT; i++)
+	{
+		bufferLUT[i * 4 + 0] = (double)i / (double)sizeLUT;  
+		bufferLUT[i * 4 + 1] = (double)i / (double)sizeLUT; 
+		bufferLUT[i * 4 + 2] = (double)i / (double)sizeLUT; 
+		bufferLUT[i * 4 + 3] = (double)i / (double)sizeLUT; 
+	}
+	LoadLUT(&bufferLUT[0], sizeLUT);
+
 	textureVolumeObject->SetVolumeTexture(textureVolume); 
+	textureVolumeObject->SetLUTTexture(textureLUT); 
 	
 	axisObject = new AxisObject();
 	AxisObject::InitSystem(); 
@@ -130,6 +143,15 @@ void RenderViewport::ImportTIFFFileSequence(QStringList fileNames)
 		return; 
 	textureVolume->Allocate(image3D.Width(), image3D.Height(), image3D.Depth(), false);
 	textureVolume->LoadData(image3D.Data());
+	
+	update();
+}
+
+void RenderViewport::LoadLUT(float* buffer, int sizeLUT)
+{
+	if(textureLUT->Width() != sizeLUT)
+		textureLUT->Allocate(sizeLUT);
+	textureLUT->LoadData(buffer);
 	
 	update();
 }

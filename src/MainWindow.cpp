@@ -45,7 +45,16 @@ MainWindow::MainWindow()
 			renderViewport.update();
 		}
 	});
+	
+	QObject::connect(controlPanel.imageSettings->sampleMapping, &SampleMappingEditor::CurveChanged, [this]()
+	{
+		int sizeLUT = 256; 
+		std::vector<float> bufferLUT(sizeLUT * 4);
+		controlPanel.imageSettings->sampleMapping->GetLUT(sizeLUT, &bufferLUT[0]);
+		renderViewport.LoadLUT(&bufferLUT[0], sizeLUT);
 		
+	});
+	
 	//central
 	setCentralWidget(&renderViewport);
 

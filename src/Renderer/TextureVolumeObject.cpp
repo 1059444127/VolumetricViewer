@@ -42,6 +42,7 @@ uniform sampler3D volumeTexture;
 uniform vec3 texDim;
 uniform float brightness;
 uniform float contrast;
+uniform sampler1D lutTexture;
 
 //output
 layout(location = 0) out vec4 outputColor; 
@@ -58,7 +59,9 @@ void main()
 	vec4 col = texture(volumeTexture, (fragPos.xyz * vec3(1, 1, 1/dasp) + vec3(0.5f, 0.5f, 0.5f)));
 	if(col.w <= 0.0001f)
 		discard; 
-  	outputColor = vec4(col.r, col.r, col.r, col.r);
+	
+	
+  	outputColor = texture(lutTexture, col.r);
 }
 )";
  
@@ -253,6 +256,20 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 		ogl->glBindTexture(GL_TEXTURE_3D, 0);
 	}
 	
+	//update LUT texture
+	int lutTextureLocation = ogl->glGetUniformLocation(programShaderObject, "lutTexture"); 
+	ogl->glUniform1i(lutTextureLocation, 1);
+	ogl->glActiveTexture(GL_TEXTURE0 + 1);
+	
+	if(lutTexture != NULL)
+	{
+		ogl->glBindTexture(GL_TEXTURE_1D, lutTexture->GetTextureId());
+	}
+	else
+	{
+		ogl->glBindTexture(GL_TEXTURE_1D, 0);
+	}
+	
 	//update material uniforms
 	int materialAlphaLocation = ogl->glGetUniformLocation(programShaderObject, "brightness"); 
 	ogl->glUniform1f(materialAlphaLocation, brightness);
@@ -290,4 +307,10 @@ void TextureVolumeObject::Destroy()
 void TextureVolumeObject::SetVolumeTexture(Texture3D* vt)
 {
 	volumeTexture = vt; 
+}
+
+
+void TextureVolumeObject::SetLUTTexture(Texture1D* lt)
+{
+	lutTexture = lt;
 }
