@@ -34,6 +34,10 @@ void RenderViewport::initializeGL()
 	textureVolumeObject = new TextureVolumeObject;
 	textureVolumeObject->Init();
 	
+	RayVolumeObject::InitSystem();
+	rayVolumeObject = new RayVolumeObject;
+	rayVolumeObject->Init();
+	
 	textureVolume = new Texture3D; 
 	
 	textureLUT = new Texture1D;

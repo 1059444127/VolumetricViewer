@@ -227,6 +227,8 @@ void SampleMappingAxis::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
 SampleMappingEditor::SampleMappingEditor()
 {
+	setWindowFlag(Qt::WindowStaysOnTopHint, true);
+	
 	prevNodeColor = QColor(255, 255, 255);
 	 
 	selectedNode = NULL;

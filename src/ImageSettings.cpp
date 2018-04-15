@@ -15,7 +15,7 @@ ImageSettings::ImageSettings()
 	
 	chooserPosition = new Vector3Chooser("position");		
 	chooserRotation = new Vector3Chooser("rotation");
-	chooserScale = new Vector3Chooser("scale");
+	chooserScale = new Vector3Chooser("scale", 1, 1, 1);
 	//layoutGroup->addWidget(chooserPosition); 
 	//layoutGroup->addWidget(chooserRotation); 
 	layoutGroup->addWidget(chooserScale);

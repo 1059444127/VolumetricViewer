@@ -27,3 +27,8 @@ glm::mat4 CameraObject::GetViewMatrix()
 {
 	return glm::inverse(GetModelMatrix());
 }
+
+float CameraObject::GetFovV()
+{
+	return fovV; 
+}
