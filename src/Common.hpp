@@ -46,6 +46,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QColorDialog>
+#include <QtWidgets/QComboBox>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QOpenGLWidget>

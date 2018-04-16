@@ -19,6 +19,12 @@ ControlPanel::ControlPanel(): QDockWidget("Control Panel")
 	checkAxisVisible = new QCheckBox("Axis Visible");
 	layoutBase->addWidget(checkAxisVisible);
 	
+	comboRenderer = new QComboBox();
+	comboRenderer->addItem("Slice");
+	comboRenderer->addItem("Ray");
+	comboRenderer->addItem("Cinematic");
+	layoutBase->addWidget(comboRenderer);
+	
 	imageSettings = new ImageSettings();
 	layoutBase->addWidget(imageSettings);
 }

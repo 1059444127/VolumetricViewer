@@ -14,6 +14,7 @@ class ControlPanel: public QDockWidget
 		QVBoxLayout* layoutBase;
 		
 		QCheckBox* checkAxisVisible;
+		QComboBox* comboRenderer; 
 		
 		ImageSettings* imageSettings;
 	
