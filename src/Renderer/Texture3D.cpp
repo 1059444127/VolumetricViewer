@@ -3,7 +3,7 @@
 
 Texture3D::Texture3D()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	ogl->glGenTextures(1, &textureId);
 	
@@ -30,7 +30,7 @@ void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d, bool compressed)
 	height = h;
 	depth = d; 
 	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
 	
@@ -49,14 +49,14 @@ void Texture3D::Allocate(uint64_t w, uint64_t h, uint64_t d, bool compressed)
 
 void Texture3D::Destroy()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glDeleteTextures(1, &textureId);
 }
 
 void Texture3D::LoadData(void* buffer)
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
 	ogl->glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
@@ -65,7 +65,7 @@ void Texture3D::LoadData(void* buffer)
 
 void Texture3D::LoadDataSlice(void* buffer, uint64_t Z)
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glBindTexture(GL_TEXTURE_3D, textureId);
 	ogl->glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, Z, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, buffer);

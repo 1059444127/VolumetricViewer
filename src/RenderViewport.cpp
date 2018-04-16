@@ -11,18 +11,24 @@
 
 RenderViewport::RenderViewport()
 {
-	QSurfaceFormat glFormat;
-	glFormat.setMajorVersion(3);
-	glFormat.setMinorVersion(3);
-	glFormat.setProfile( QSurfaceFormat::CompatibilityProfile ); 
-	
-	setFormat(glFormat); 
 	setFocusPolicy(Qt::ClickFocus);
 }
 
 void RenderViewport::initializeGL()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	if(!isValid())
+	{
+		std::cout << "RenderViewport: QSurfaceFormat: surface failed" << std::endl; 
+		return; 
+	}
+	
+	OPENGL_FUNC_MACRO
+	if(!ogl)
+	{
+		std::cout << "RenderViewport: ogl functions could not be loaded" << std::endl; 
+		return; 
+	}
+	
     ogl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	cameraObject = new CameraObject;
@@ -71,7 +77,14 @@ void RenderViewport::resizeGL(int w, int h)
 
 void RenderViewport::paintGL()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
+	if(!ogl)
+	{
+		std::cout << "RenderViewport: ogl functions could not be loaded" << std::endl; 
+		return; 
+	}
+	
+
     ogl->glClear(GL_COLOR_BUFFER_BIT);
 	ogl->glClear(GL_DEPTH_BUFFER_BIT);
 	

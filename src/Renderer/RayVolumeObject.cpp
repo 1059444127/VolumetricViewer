@@ -48,7 +48,7 @@ int RayVolumeObject::fragmentShaderObject;
  
 void RayVolumeObject::InitSystem()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	//make array to pointer for source code (needed for opengl )
 	const char* vsrc[1];
@@ -104,7 +104,7 @@ RayVolumeObject::RayVolumeObject()
 void RayVolumeObject::Init()
 {
 	//Init Buffers and VAO for rendering	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glGenBuffers(1, &vertexBuffer);
 	ogl->glGenVertexArrays(1, &vertexArrayObject);
@@ -166,7 +166,7 @@ void RayVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
 	if(!visible) return; 
 	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	//compute mvp matrix
 	glm::mat4 modelMatrix = GetModelMatrix(); 
@@ -236,7 +236,7 @@ void RayVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 
 void RayVolumeObject::Destroy()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	ogl->glDeleteBuffers(1, &vertexBuffer);
 	ogl->glDeleteVertexArrays(1, &vertexArrayObject);
 }

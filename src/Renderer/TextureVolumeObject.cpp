@@ -71,7 +71,7 @@ int TextureVolumeObject::fragmentShaderObject;
  
 void TextureVolumeObject::InitSystem()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	//make array to pointer for source code (needed for opengl )
 	const char* vsrc[1];
@@ -128,7 +128,7 @@ TextureVolumeObject::TextureVolumeObject(unsigned int slices)
 void TextureVolumeObject::Init()
 {
 	//Init Buffers and VAO for rendering	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glGenBuffers(1, &vertexBuffer);
 	ogl->glGenBuffers(1, &elementBuffer);
@@ -200,7 +200,7 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 {
 	if(!visible) return; 
 	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	//compute mvp matrix
 	glm::mat4 modelMatrix = GetModelMatrix(); 
@@ -297,7 +297,7 @@ void TextureVolumeObject::Render(glm::mat4 viewMatrix, glm::mat4 projectionMatri
 
 void TextureVolumeObject::Destroy()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	ogl->glDeleteBuffers(1, &vertexBuffer);
 	ogl->glDeleteBuffers(1, &elementBuffer);
 	ogl->glDeleteVertexArrays(1, &vertexArrayObject);

@@ -3,7 +3,7 @@
 
 Texture1D::Texture1D()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	ogl->glGenTextures(1, &textureId);
 	
@@ -26,7 +26,7 @@ void Texture1D::Allocate(uint64_t w)
 {
 	width = w;
 	
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glBindTexture(GL_TEXTURE_1D, textureId);
 
@@ -38,14 +38,14 @@ void Texture1D::Allocate(uint64_t w)
 
 void Texture1D::Destroy()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glDeleteTextures(1, &textureId);
 }
 
 void Texture1D::LoadData(void* buffer)
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 
 	ogl->glBindTexture(GL_TEXTURE_1D, textureId);
 	ogl->glTexSubImage1D(GL_TEXTURE_1D, 0, 0, width, GL_RGBA, GL_FLOAT, buffer);

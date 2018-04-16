@@ -3,7 +3,7 @@
 
 void PrintGLErrors()
 {
-	OPENGL_FUNC_MACRO* ogl = QOpenGLContext::currentContext()->versionFunctions<OPENGL_FUNC_MACRO>();
+	OPENGL_FUNC_MACRO
 	
 	GLenum error = GL_NO_ERROR;
 	do {

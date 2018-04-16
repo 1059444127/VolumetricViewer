@@ -1,6 +1,8 @@
 #pragma once
 
-#define OPENGL_FUNC_MACRO QOpenGLFunctions_3_3_Compatibility
+
+#define OPENGL_FUNC_MACRO QOpenGLFunctions_3_3_Core* ogl = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+
 
 //glm
 #define GLM_FORCE_INLINE 
@@ -52,3 +54,4 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLFunctions_3_3_Compatibility>
+#include <QOpenGLFunctions_3_3_Core>
